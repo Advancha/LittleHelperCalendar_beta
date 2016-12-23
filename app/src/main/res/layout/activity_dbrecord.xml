@@ -116,7 +116,8 @@
                 android:text="@string/save"
                 android:textColor="@color/caldroid_darker_gray"
                 android:id="@+id/button_save"
-                />
+                android:onClick="OnSave"
+                android:elevation="0dp" />
             <Button
                 android:layout_width="0dp"
                 android:layout_weight="1"

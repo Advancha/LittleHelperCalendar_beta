@@ -34,6 +34,10 @@
                 android:text="Add"
                 android:id="@+id/addButton"
                 android:onClick="OnClickAdd"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/dr_rec_test"/>
         </LinearLayout>
         <ListView
             android:layout_width="match_parent"

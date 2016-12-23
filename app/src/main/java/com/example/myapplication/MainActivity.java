@@ -1,11 +1,13 @@
 package com.example.myapplication;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Date;
@@ -16,7 +18,6 @@ import java.util.Map;
 
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
-import com.roomorama.caldroid.CalendarHelper;
 
 import hirondelle.date4j.DateTime;
 
@@ -33,6 +34,28 @@ public class MainActivity extends AppCompatActivity {
 
        // caldroidFragment = new CaldroidFragment();
         caldroidFragment = new CaldroidCustomFragment();
+
+        //test DB
+
+        DBHelper dbHelper = new DBHelper(this);
+        SQLiteDatabase db;
+        db = dbHelper.getReadableDatabase();
+
+
+
+        TextView textView = (TextView) findViewById(R.id.dr_rec_test);
+
+
+
+            Cursor cursor = db.query(DBContract.LittleCalendar.TABLE_NAME,new String[]{
+                            DBContract.LittleCalendar.COLUMN_NAME_DATE,
+                            DBContract.LittleCalendar.COLUMN_NAME_CLIENT},
+                            null, null, null, null, null);
+
+        textView.setText(Integer.toString(cursor.getCount()));
+
+
+
 
 
         CaldroidListener caldroidListener = new CaldroidListener() {
