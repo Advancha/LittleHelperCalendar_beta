@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class DBHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "LittleHelperDB.db";
 
 
@@ -22,6 +22,8 @@ public class DBHelper extends SQLiteOpenHelper {
                     DBContract.LittleCalendar.COLUMN_NAME_ENTRY_ID + TEXT_TYPE + COMMA_SEP +
                     DBContract.LittleCalendar.COLUMN_NAME_CLIENT + TEXT_TYPE + COMMA_SEP +
                     DBContract.LittleCalendar.COLUMN_NAME_DATE + TEXT_TYPE + COMMA_SEP +
+                    DBContract.LittleCalendar.COLUMN_NAME_TIME + TEXT_TYPE + COMMA_SEP +
+                    DBContract.LittleCalendar.COLUMN_NAME_DATE_TIME + TEXT_TYPE + COMMA_SEP +
                     DBContract.LittleCalendar.COLUMN_NAME_PRICE + REAL_TYPE +
                     " )";
 

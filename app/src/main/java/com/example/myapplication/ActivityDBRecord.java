@@ -52,7 +52,9 @@ public class ActivityDBRecord extends FragmentActivity {
 
         values.put(DBContract.LittleCalendar.COLUMN_NAME_ENTRY_ID, 1);
         values.put(DBContract.LittleCalendar.COLUMN_NAME_CLIENT, client);
-        values.put(DBContract.LittleCalendar.COLUMN_NAME_DATE, ""+date+"T"+time+"");
+        values.put(DBContract.LittleCalendar.COLUMN_NAME_DATE, date);
+        values.put(DBContract.LittleCalendar.COLUMN_NAME_TIME, time);
+        values.put(DBContract.LittleCalendar.COLUMN_NAME_DATE_TIME, ""+date+"T"+time+"");
         values.put(DBContract.LittleCalendar.COLUMN_NAME_PRICE, price);
 
 
@@ -63,7 +65,7 @@ public class ActivityDBRecord extends FragmentActivity {
                 values);
 
 
-        Toast.makeText(this,"New record _ID is "+newRowId,Toast.LENGTH_SHORT);
+        Toast.makeText(this,"New record DATE_TIME is "+""+date+"T"+time+"",Toast.LENGTH_LONG).show();
 
     }
     public void showTimePickerDialog(View v) {
@@ -73,6 +75,7 @@ public class ActivityDBRecord extends FragmentActivity {
 
     public void OnSave(View view) {
         AddDBRecord(date.getText().toString(), time.getText().toString(), client.getText().toString(), price.getText().toString());
+        this.finish();
     }
 
     public static class TimePickerFragment extends DialogFragment

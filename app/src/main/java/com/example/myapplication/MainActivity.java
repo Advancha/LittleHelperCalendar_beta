@@ -3,10 +3,12 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,37 +28,19 @@ public class MainActivity extends AppCompatActivity {
     private CaldroidFragment caldroidFragment;
     private DateTime selectedDate;
     private Map extraData = new HashMap<String,DateTime>();
+    private ListView clientList;
+    private Cursor cursor;
+    private CustomCursorAdapter cursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        clientList = (ListView) findViewById(R.id.client_list);
+
        // caldroidFragment = new CaldroidFragment();
         caldroidFragment = new CaldroidCustomFragment();
-
-        //test DB
-
-        DBHelper dbHelper = new DBHelper(this);
-        SQLiteDatabase db;
-        db = dbHelper.getReadableDatabase();
-
-
-
-        TextView textView = (TextView) findViewById(R.id.dr_rec_test);
-
-
-
-            Cursor cursor = db.query(DBContract.LittleCalendar.TABLE_NAME,new String[]{
-                            DBContract.LittleCalendar.COLUMN_NAME_DATE,
-                            DBContract.LittleCalendar.COLUMN_NAME_CLIENT},
-                            null, null, null, null, null);
-
-        textView.setText(Integer.toString(cursor.getCount()));
-
-
-
-
 
         CaldroidListener caldroidListener = new CaldroidListener() {
             @Override
@@ -67,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 caldroidFragment.setExtraData(extraData);
 
                 caldroidFragment.refreshView();
+                onCalDataChange(date);
                 }
 
             @Override
@@ -89,9 +74,9 @@ public class MainActivity extends AppCompatActivity {
 
         selectedDate = dateToDateTime(cal.getTime());
         extraData.put("SELECTED_DATE", selectedDate);
-   //     caldroidFragment.setExtraData(extraData);
-
         caldroidFragment.setArguments(args);
+
+        onCalDataChange(cal.getTime());
 
 
 /*
@@ -125,6 +110,39 @@ public class MainActivity extends AppCompatActivity {
         DateTime dateTime = new DateTime(gDate.get(Calendar.YEAR),gDate.get(Calendar.MONTH)+1,gDate.get(Calendar.DAY_OF_MONTH),0,0,0,0);
         return dateTime;
     }
+
+    public String getStringDate(Date date){
+        String stringDate="";
+        GregorianCalendar gDate = new GregorianCalendar();
+        gDate.setTime(date);
+        stringDate=String.format("%1$4d-%2$02d-%3$02d",gDate.get(Calendar.YEAR),gDate.get(Calendar.MONTH)+1,gDate.get(Calendar.DAY_OF_MONTH));
+        return stringDate;
+    }
+
+
+    public void onCalDataChange(Date date){
+        DBHelper dbHelper = new DBHelper(this);
+        SQLiteDatabase db;
+        db = dbHelper.getReadableDatabase();
+        String selectedDate = getStringDate(date);
+
+        String selection = DBContract.LittleCalendar.COLUMN_NAME_DATE+"=?";
+        String query = "SELECT * FROM "+DBContract.LittleCalendar.TABLE_NAME+" WHERE "+selection;
+        String[] selectionArgs = new String[] {selectedDate};
+
+        try{
+            cursor = db.rawQuery(query,selectionArgs);
+            cursorAdapter = new CustomCursorAdapter(this, cursor);
+            clientList.setAdapter(cursorAdapter);
+            cursorAdapter.changeCursor(cursor);
+        }
+        catch (SQLiteException e){
+            System.out.println(e.getMessage());
+
+        }
+
+    }
+
 }
 
 
