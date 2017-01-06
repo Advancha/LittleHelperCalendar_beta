@@ -25,11 +25,14 @@ public class CustomCursorAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         TextView lcTime = (TextView)view.findViewById(R.id.list_cell_time);
         TextView lcClient = (TextView)view.findViewById(R.id.list_cell_client);
+        TextView lcPrice = (TextView) view.findViewById(R.id.list_cell_price);
 
         String time = cursor.getString(cursor.getColumnIndexOrThrow(DBContract.LittleCalendar.COLUMN_NAME_TIME));
         String client = cursor.getString(cursor.getColumnIndexOrThrow(DBContract.LittleCalendar.COLUMN_NAME_CLIENT));
+        String price = cursor.getString(cursor.getColumnIndexOrThrow(DBContract.LittleCalendar.COLUMN_NAME_PRICE));
 
         lcTime.setText(time);
         lcClient.setText(client);
+        lcPrice.setText(price);
     }
 }

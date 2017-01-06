@@ -33,7 +33,7 @@ public class CaldroidCustomAdapter extends CaldroidGridAdapter {
         DateTime dateTime = this.datetimeList.get(position);
 
         DateTime selectedDate  = (DateTime) extraData.get("SELECTED_DATE");
-        //DateTime selectedDate  =  selectedDates.get(1);
+
         if (selectedDate!=null){
             if ((selectedDate.equals(dateTime))&&(!selectedDate.equals(getToday()))){
                 cellView.setBackgroundResource(R.drawable.green_border);
