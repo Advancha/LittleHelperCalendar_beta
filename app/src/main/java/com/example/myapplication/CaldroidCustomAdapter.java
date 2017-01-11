@@ -35,8 +35,10 @@ public class CaldroidCustomAdapter extends CaldroidGridAdapter {
         DateTime selectedDate  = (DateTime) extraData.get("SELECTED_DATE");
 
         if (selectedDate!=null){
-            if ((selectedDate.equals(dateTime))&&(!selectedDate.equals(getToday()))){
-                cellView.setBackgroundResource(R.drawable.green_border);
+            if ((selectedDate.equals(dateTime))
+                    &&(!selectedDate.equals(getToday()))
+                    ){
+                cellView.setBackgroundResource(R.drawable.list_bcg_1);
             }
         }
         return cellView;

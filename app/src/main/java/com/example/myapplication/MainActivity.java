@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Date;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private DateTime selectedDate;
     private Map extraData = new HashMap<String,DateTime>();
     private ListView clientList;
+    private TextView tvSelectedDate;
     private Cursor cursor;
     private CustomCursorAdapter cursorAdapter;
 
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
         clientList = (ListView) findViewById(R.id.client_list);
 
+        tvSelectedDate = (TextView) findViewById(R.id.selected_date);
+        tvSelectedDate.setText(dateToString(selectedDate));
 
         caldroidFragment = new CaldroidCustomFragment();
 
@@ -59,15 +63,17 @@ public class MainActivity extends AppCompatActivity {
                 caldroidFragment.setExtraData(extraData);
 
                 caldroidFragment.refreshView();
-                onCalDataChange(date);
+                onCalDataChange(selectedDate);
+
+                tvSelectedDate.setText(dateToString(selectedDate));
                 }
 
             @Override
             public void onCaldroidViewCreated() {
-                Toast.makeText(getApplicationContext(),
+           /*     Toast.makeText(getApplicationContext(),
                         "Caldroid view is created",
                         Toast.LENGTH_SHORT).show();
-            }
+            */}
         };
 
         caldroidFragment.setCaldroidListener(caldroidListener);
@@ -79,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         args.putInt(CaldroidFragment.MONTH, selectedDate.getMonth());
         args.putInt(CaldroidFragment.YEAR, selectedDate.getYear());
         args.putBoolean(CaldroidFragment.SIX_WEEKS_IN_CALENDAR, false);
+        args.putBoolean(CaldroidFragment.SQUARE_TEXT_VIEW_CELL, false);
         args.putInt(CaldroidFragment.START_DAY_OF_WEEK, CaldroidFragment.MONDAY);
         caldroidFragment.setArguments(args);
 
@@ -100,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
   protected void onResume() {
         super.onResume();
         getSettings();
+        onCalDataChange(selectedDate);
     }
 
     @Override
@@ -149,29 +157,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void onCalDataChange(Date date){
-        DBHelper dbHelper = new DBHelper(this);
-        SQLiteDatabase db;
-        db = dbHelper.getReadableDatabase();
-        String selectedDateString = dateToString(dateToDateTime(date));
-
-        String selection = DBContract.LittleCalendar.COLUMN_NAME_DATE+"=?";
-        String query = "SELECT * FROM "+DBContract.LittleCalendar.TABLE_NAME+" WHERE "+selection;
-        String[] selectionArgs = new String[] {selectedDateString};
-
-        try{
-            cursor = db.rawQuery(query,selectionArgs);
-            cursorAdapter = new CustomCursorAdapter(this, cursor);
-            clientList.setAdapter(cursorAdapter);
-            cursorAdapter.changeCursor(cursor);
-        }
-        catch (SQLiteException e){
-            System.out.println(e.getMessage());
-
-        }
-
-    }
-
     public void onCalDataChange(DateTime date){
         DBHelper dbHelper = new DBHelper(this);
         SQLiteDatabase db;
@@ -179,7 +164,10 @@ public class MainActivity extends AppCompatActivity {
         String selectedDateString = dateToString(date);
 
         String selection = DBContract.LittleCalendar.COLUMN_NAME_DATE+"=?";
-        String query = "SELECT * FROM "+DBContract.LittleCalendar.TABLE_NAME+" WHERE "+selection;
+        String order = DBContract.LittleCalendar.COLUMN_NAME_TIME;
+        String query = "SELECT * FROM "+DBContract.LittleCalendar.TABLE_NAME
+                        + " WHERE "+selection
+                        + " ORDER BY "+order+" ASC";
         String[] selectionArgs = new String[] {selectedDateString};
 
         try{
@@ -187,6 +175,8 @@ public class MainActivity extends AppCompatActivity {
             cursorAdapter = new CustomCursorAdapter(this, cursor);
             clientList.setAdapter(cursorAdapter);
             cursorAdapter.changeCursor(cursor);
+
+
         }
         catch (SQLiteException e){
             System.out.println(e.getMessage());
@@ -194,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
 
     protected void getSettings(){
         String selectedDateString;

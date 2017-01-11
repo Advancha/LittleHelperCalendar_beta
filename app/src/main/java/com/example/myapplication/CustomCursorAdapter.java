@@ -1,11 +1,15 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -23,6 +27,15 @@ public class CustomCursorAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
+        LinearLayout lcListLayout = (LinearLayout)view.findViewById(R.id.list_layout);
+        Integer pos = (Integer)cursor.getPosition();
+
+        //if (pos%2==0)
+        //lcListLayout.setBackground(context.getResources().getDrawable(R.drawable.list_bcg_1));
+
+        //else
+        //{lcListLayout.setBackground(context.getResources().getDrawable(R.drawable.list_bcg_2));}
+
         TextView lcTime = (TextView)view.findViewById(R.id.list_cell_time);
         TextView lcClient = (TextView)view.findViewById(R.id.list_cell_client);
         TextView lcPrice = (TextView) view.findViewById(R.id.list_cell_price);

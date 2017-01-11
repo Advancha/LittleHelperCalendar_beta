@@ -6,5 +6,7 @@
     <dimen name="text_view_w">100dp</dimen>
     <dimen name="edit_view_w">250dp</dimen>
     <dimen name="text_view_h">30dp</dimen>
-    <dimen name="text_size">25dp</dimen>
+    <dimen name="text_size">20dp</dimen>
+    <dimen name="text_padding">2dp</dimen>
+
 </resources>
