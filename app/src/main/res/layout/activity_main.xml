@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/selected_date"
                 android:text="@string/selected_date"
-                style="@style/CapitalTextView"
+                style="@style/NormalTextView"
                 android:background="@drawable/list_bcg_1"
                 android:layout_marginTop="6dp"
                />

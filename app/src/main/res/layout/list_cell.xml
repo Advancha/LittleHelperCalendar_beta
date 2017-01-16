@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_gravity="center"
+        android:gravity="center_vertical"
         android:layout_weight="1"
         android:id="@+id/list_layout"
         >
@@ -11,25 +11,38 @@
         android:id="@+id/list_cell_time"
         android:text="@string/time"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="0.15"
         style="@style/NormalTextView"
+
         />
+
     <TextView
         android:id="@+id/list_cell_client"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.55"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.3"
         android:text="@string/client"
         style="@style/NormalTextView"
         />
+
+        <TextView
+            android:id="@+id/list_cell_note"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="@string/note"
+            style="@style/NormalTextView"
+            android:textColor="@color/caldroid_darker_gray"
+            />
+
     <TextView
         android:id="@+id/list_cell_price"
         android:text="@string/price"
         android:gravity="right"
         android:paddingRight="@dimen/text_padding"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="0.3"
         style="@style/NormalTextView"
         />

@@ -80,6 +80,29 @@
             android:id="@+id/client"
             />
     </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/layout_margin"
+            >
+            <TextView
+                android:layout_width="@dimen/text_view_w"
+                android:layout_height="@dimen/text_view_h"
+                android:textSize="@dimen/text_size"
+                android:text="@string/note"
+                android:textColor="@color/caldroid_darker_gray"
+                />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_view_h"
+                android:textSize="@dimen/text_size"
+                android:textColor="@color/caldroid_darker_gray"
+                android:background="@drawable/black_border"
+                android:id="@+id/note"/>
+        </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

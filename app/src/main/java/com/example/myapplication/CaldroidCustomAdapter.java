@@ -1,11 +1,15 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.roomorama.caldroid.CaldroidGridAdapter;
+
+import org.w3c.dom.Text;
 
 import java.util.Date;
 import java.util.Map;
@@ -27,20 +31,23 @@ public class CaldroidCustomAdapter extends CaldroidGridAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View  cellView;
-        cellView=super.getView(position, convertView, parent);
+        TextView cellView;
+        cellView= (TextView)super.getView(position, convertView, parent);
 
         DateTime dateTime = this.datetimeList.get(position);
 
         DateTime selectedDate  = (DateTime) extraData.get("SELECTED_DATE");
 
+        if (dateTime.equals(getToday())) {
+            cellView.setBackgroundResource(R.drawable.no_border);
+            cellView.setTextColor(Color.RED);
+        }
         if (selectedDate!=null){
-            if ((selectedDate.equals(dateTime))
-                    &&(!selectedDate.equals(getToday()))
-                    ){
+            if ((selectedDate.equals(dateTime))){
                 cellView.setBackgroundResource(R.drawable.list_bcg_1);
             }
         }
+
         return cellView;
     }
 }

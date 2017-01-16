@@ -1,5 +1,4 @@
 package com.example.myapplication;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -17,7 +16,7 @@ import android.widget.TextView;
  */
 
 public class CustomCursorAdapter extends CursorAdapter {
-    public CustomCursorAdapter(Context context, Cursor cursor){
+    public CustomCursorAdapter(MainActivity context, Cursor cursor){
         super(context,cursor,0);
     }
     @Override
@@ -39,13 +38,17 @@ public class CustomCursorAdapter extends CursorAdapter {
         TextView lcTime = (TextView)view.findViewById(R.id.list_cell_time);
         TextView lcClient = (TextView)view.findViewById(R.id.list_cell_client);
         TextView lcPrice = (TextView) view.findViewById(R.id.list_cell_price);
+        TextView lcNote = (TextView) view.findViewById(R.id.list_cell_note);
 
         String time = cursor.getString(cursor.getColumnIndexOrThrow(DBContract.LittleCalendar.COLUMN_NAME_TIME));
         String client = cursor.getString(cursor.getColumnIndexOrThrow(DBContract.LittleCalendar.COLUMN_NAME_CLIENT));
         String price = cursor.getString(cursor.getColumnIndexOrThrow(DBContract.LittleCalendar.COLUMN_NAME_PRICE));
+        String note = cursor.getString(cursor.getColumnIndexOrThrow(DBContract.LittleCalendar.COLUMN_NAME_NOTE));
+
 
         lcTime.setText(time);
         lcClient.setText(client);
         lcPrice.setText(price);
+        lcNote.setText(note);
     }
 }

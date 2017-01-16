@@ -1,13 +1,13 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">My Clients</string>
     <string name="selected_date">selected_date</string>
+    <string name="selected_id">selected_id</string>
     <string name="date">Date</string>
     <string name="time">Time</string>
     <string name="client">Client</string>
+    <string name="note">Note</string>
     <string name="price">Price</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="add_new">New...</string>
-    <string name="weight_2_7">0.2857</string>
-    <string name="weight_3_7">0.4286</string>
 </resources>

@@ -8,13 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="CapitalTextView">
+    <style name="LargeTextView">
         <item name="android:textColor">@color/caldroid_black</item>
-        <item name="android:textSize">15dp</item>
+        <item name="android:textSize">25dp</item>
         <item name="android:paddingLeft">@dimen/text_padding</item>
         <item name="android:paddingTop">@dimen/text_padding</item>
         <item name="android:paddingBottom">@dimen/text_padding</item>
-        <item name="android:textAllCaps">true</item>
         <item name="android:layout_marginBottom">0dp</item>
         <item name="android:layout_marginRight">0dp</item>
     </style>
