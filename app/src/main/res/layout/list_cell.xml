@@ -10,9 +10,8 @@
     <TextView
         android:id="@+id/list_cell_time"
         android:text="@string/time"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/time_cell_width"
         android:layout_height="wrap_content"
-        android:layout_weight="0.15"
         style="@style/NormalTextView"
 
         />
@@ -33,7 +32,7 @@
             android:layout_weight="0.25"
             android:text="@string/note"
             style="@style/NormalTextView"
-            android:textColor="@color/caldroid_darker_gray"
+            android:textColor="@color/secondary_text"
             />
 
     <TextView

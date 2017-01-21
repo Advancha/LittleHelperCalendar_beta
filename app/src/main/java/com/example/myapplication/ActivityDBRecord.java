@@ -26,6 +26,8 @@ public class ActivityDBRecord extends FragmentActivity {
     private TextView price;
     private TextView note;
 
+    private Integer selectedID;
+    private static Integer EMPTY_ID=new Integer(-1);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,21 +40,14 @@ public class ActivityDBRecord extends FragmentActivity {
         note = (TextView) findViewById(R.id.note);
         price = (TextView) findViewById(R.id.price);
 
-
         Intent i = getIntent();
         String selectedDate = i.getStringExtra(String.valueOf(R.string.selected_date));
-        String selectedID = i.getStringExtra(String.valueOf(R.string.selected_id));
-
+        selectedID = i.getIntExtra(String.valueOf(R.string.selected_id), EMPTY_ID);
         date.setText(selectedDate);
 
-        if (!selectedID.isEmpty()) {
+        if (!selectedID.equals(EMPTY_ID)) {
               selectDBRecord(selectedID);
         }
-
-
-
-
-
     }
 
 
@@ -60,9 +55,7 @@ public class ActivityDBRecord extends FragmentActivity {
         DBHelper mDbHelper = new DBHelper(this);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-
         ContentValues values = new ContentValues();
-
         values.put(DBContract.LittleCalendar.COLUMN_NAME_ENTRY_ID, 1);
         values.put(DBContract.LittleCalendar.COLUMN_NAME_CLIENT, client);
         values.put(DBContract.LittleCalendar.COLUMN_NAME_NOTE, note);
@@ -71,16 +64,33 @@ public class ActivityDBRecord extends FragmentActivity {
         values.put(DBContract.LittleCalendar.COLUMN_NAME_DATE_TIME, ""+date+"T"+time+"");
         values.put(DBContract.LittleCalendar.COLUMN_NAME_PRICE, price);
 
-
         long newRowId;
         newRowId = db.insert(
                 DBContract.LittleCalendar.TABLE_NAME,
                 null,
                 values);
+    }
 
+    public void updDBRecord(String date, String time, String client, String price, String note){
+        DBHelper mDbHelper = new DBHelper(this);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-       // Toast.makeText(this,"New record DATE_TIME is "+""+date+"T"+time+"",Toast.LENGTH_LONG).show();
+        ContentValues values = new ContentValues();
+        values.put(DBContract.LittleCalendar.COLUMN_NAME_ENTRY_ID, 1);
+        values.put(DBContract.LittleCalendar.COLUMN_NAME_CLIENT, client);
+        values.put(DBContract.LittleCalendar.COLUMN_NAME_NOTE, note);
+        values.put(DBContract.LittleCalendar.COLUMN_NAME_DATE, date);
+        values.put(DBContract.LittleCalendar.COLUMN_NAME_TIME, time);
+        values.put(DBContract.LittleCalendar.COLUMN_NAME_DATE_TIME, ""+date+"T"+time+"");
+        values.put(DBContract.LittleCalendar.COLUMN_NAME_PRICE, price);
 
+       db.update(DBContract.LittleCalendar.TABLE_NAME,values," _id="+selectedID,null);
+    }
+    public void delDBRecord(){
+        DBHelper mDbHelper = new DBHelper(this);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        db.delete(DBContract.LittleCalendar.TABLE_NAME," _id="+selectedID,null);
     }
 
     public void setFields(Cursor cursor){
@@ -104,42 +114,48 @@ public class ActivityDBRecord extends FragmentActivity {
 
     }
 
-    public void selectDBRecord(String selectedID){
+    public void selectDBRecord(Integer selectedID){
         DBHelper dbHelper = new DBHelper(this);
         SQLiteDatabase db;
         db = dbHelper.getReadableDatabase();
-       // String selectedDateString = dateToString(date);
 
-       // String selection = " _id =?";
-        String query = "SELECT * FROM " + DBContract.LittleCalendar.TABLE_NAME
-               + " WHERE _id=" + Integer.parseInt(selectedID);
-       String[] selectionArgs = new String[]{selectedID};
-
+        String query = "SELECT * FROM " + DBContract.LittleCalendar.TABLE_NAME +" WHERE _id=" + selectedID;
         try {
 
             Cursor cursor = db.rawQuery(query,null);
             setFields(cursor);
-     /*       cursorAdapter = new CustomCursorAdapter(this, cursor);
-            clientList.setAdapter(cursorAdapter);
-            cursorAdapter.changeCursor(cursor);
-*/
-
         } catch (SQLiteException e) {
             System.out.println(e.getMessage());
 
         }
-
-
     }
+
     public void showTimePickerDialog(View v) {
         DialogFragment newFragment = new TimePickerFragment();
         newFragment.show(getFragmentManager(), "timePicker");
     }
 
-    public void OnSave(View view) {
-        addDBRecord(date.getText().toString(), time.getText().toString(), client.getText().toString(), price.getText().toString(), note.getText().toString());
+    public void onSave(View view) {
+        if (selectedID.equals(EMPTY_ID)) {
+            addDBRecord(date.getText().toString(), time.getText().toString(), client.getText().toString(), price.getText().toString(), note.getText().toString());
+        }
+        else{
+            updDBRecord(date.getText().toString(), time.getText().toString(), client.getText().toString(), price.getText().toString(), note.getText().toString());
+        }
         this.finish();
     }
+
+    public void onBack(View view) {
+        this.finish();
+    }
+
+    public void onDel(View view) {
+        if (!selectedID.equals(EMPTY_ID)) {
+            delDBRecord();
+        }
+        this.finish();
+    }
+
 
     public static class TimePickerFragment extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {

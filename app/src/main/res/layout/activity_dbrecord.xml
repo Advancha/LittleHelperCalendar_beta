@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_dbrecord"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.myapplication.ActivityDBRecord">
-    <LinearLayout
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_dbrecord"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:context="com.example.myapplication.ActivityDBRecord">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,14 +17,12 @@
                 android:layout_height="@dimen/text_view_h"
                 android:textSize="@dimen/text_size"
                 android:text="@string/date"
-                android:textColor="@color/caldroid_darker_gray"
+
                 />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/text_view_h"
                 android:textSize="@dimen/text_size"
-                android:textColor="@color/caldroid_darker_gray"
-                android:background="@drawable/black_border"
                 android:id="@+id/date"
                 >
             </TextView>
@@ -41,18 +33,15 @@
         android:orientation="horizontal"
         android:layout_margin="@dimen/layout_margin">
         <TextView
-            android:layout_width="@dimen/text_view_w"
-            android:layout_height="@dimen/text_view_h"
-            android:textSize="@dimen/text_size"
+            style="@style/TextForDetails"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:text="@string/time"
-            android:textColor="@color/caldroid_darker_gray"
             />
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/text_view_h"
-            android:textSize="@dimen/text_size"
-            android:textColor="@color/caldroid_darker_gray"
-            android:background="@drawable/black_border"
+            style="@style/EditTextForDetails"
+            android:layout_width="0dp"
+            android:layout_weight="3"
             android:id="@+id/time"
             android:onClick="showTimePickerDialog"
             >
@@ -65,42 +54,34 @@
         android:layout_margin="@dimen/layout_margin"
        >
         <TextView
-            android:layout_width="@dimen/text_view_w"
-            android:layout_height="@dimen/text_view_h"
-            android:textSize="@dimen/text_size"
+            style="@style/TextForDetails"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:text="@string/client"
-            android:textColor="@color/caldroid_darker_gray"
             />
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/text_view_h"
-            android:textSize="@dimen/text_size"
-            android:textColor="@color/caldroid_darker_gray"
-            android:background="@drawable/black_border"
+            style="@style/EditTextForDetails"
+            android:layout_width="0dp"
+            android:layout_weight="3"
             android:id="@+id/client"
             />
     </LinearLayout>
-
-        <LinearLayout
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_margin="@dimen/layout_margin"
             >
-            <TextView
-                android:layout_width="@dimen/text_view_w"
-                android:layout_height="@dimen/text_view_h"
-                android:textSize="@dimen/text_size"
-                android:text="@string/note"
-                android:textColor="@color/caldroid_darker_gray"
-                />
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/text_view_h"
-                android:textSize="@dimen/text_size"
-                android:textColor="@color/caldroid_darker_gray"
-                android:background="@drawable/black_border"
-                android:id="@+id/note"/>
+        <TextView
+            style="@style/TextForDetails"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/note" />
+        <EditText
+            style="@style/EditTextForDetails"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:id="@+id/note"/>
         </LinearLayout>
 
     <LinearLayout
@@ -110,24 +91,20 @@
         android:layout_margin="@dimen/layout_margin"
         >
         <TextView
-            android:layout_width="@dimen/text_view_w"
-            android:layout_height="@dimen/text_view_h"
-            android:textSize="@dimen/text_size"
+            style="@style/TextForDetails"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:text="@string/price"
-            android:textColor="@color/caldroid_darker_gray"
             />
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/text_view_h"
-            android:textSize="@dimen/text_size"
-            android:textColor="@color/caldroid_darker_gray"
-            android:background="@drawable/black_border"
+            style="@style/EditTextForDetails"
+            android:layout_width="0dp"
+            android:layout_weight="3"
             android:id="@+id/price"/>
     </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
             android:layout_margin="@dimen/layout_margin"
             >
@@ -135,21 +112,32 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/back"
+                android:text="@string/back"
+                android:id="@+id/button_back"
+                android:onClick="onBack"
+                android:layout_gravity="bottom"
+                />
+            <Button
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/save"
                 android:text="@string/save"
-                android:textColor="@color/caldroid_darker_gray"
                 android:id="@+id/button_save"
-                android:onClick="OnSave"
-                android:elevation="0dp" />
+                android:onClick="onSave"
+                android:layout_gravity="bottom"
+                 />
             <Button
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/del"
-                android:text="@string/cancel"
-                android:textColor="@color/caldroid_darker_gray"
-                android:id="@+id/button_cancel"/>
+                android:text="@string/del"
+                android:id="@+id/button_del"
+                android:onClick="onDel"
+                android:layout_gravity="bottom"/>
         </LinearLayout>
 
     </LinearLayout>
-</RelativeLayout>
+

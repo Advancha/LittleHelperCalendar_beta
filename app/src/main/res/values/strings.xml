@@ -1,13 +1,16 @@
 <resources>
     <string name="app_name">My Clients</string>
+
+    <string name="save">Save</string>
+    <string name="del">Delete</string>
+    <string name="back">Back</string>
     <string name="selected_date">selected_date</string>
     <string name="selected_id">selected_id</string>
+
     <string name="date">Date</string>
     <string name="time">Time</string>
     <string name="client">Client</string>
     <string name="note">Note</string>
     <string name="price">Price</string>
-    <string name="save">Save</string>
-    <string name="cancel">Cancel</string>
-    <string name="add_new">New...</string>
+    <string name="add_new">Додати...</string>
 </resources>

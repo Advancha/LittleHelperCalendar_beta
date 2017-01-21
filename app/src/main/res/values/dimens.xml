@@ -8,5 +8,6 @@
     <dimen name="text_view_h">30dp</dimen>
     <dimen name="text_size">20dp</dimen>
     <dimen name="text_padding">2dp</dimen>
+    <dimen name="time_cell_width">70dp</dimen>
 
 </resources>

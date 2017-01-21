@@ -66,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
                // cursor.getColumnIndexOrThrow()
                 //Cursor sqlCursor=(Cursor)(clientList.getItemAtPosition(position));
 
-                String str_id=cursor.getString(cursor.getColumnIndexOrThrow(DBContract.LittleCalendar._ID));
-                openDBRecordActivity(str_id);
+                Integer selected_id=cursor.getInt(cursor.getColumnIndexOrThrow(DBContract.LittleCalendar._ID));
+                openDBRecordActivity(selected_id);
 
              /* String str_time=cursor.getString(cursor.getColumnIndexOrThrow(DBContract.LittleCalendar.COLUMN_NAME_TIME));
                 String str_client=cursor.getString(cursor.getColumnIndexOrThrow(DBContract.LittleCalendar.COLUMN_NAME_CLIENT));
@@ -161,20 +161,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void openDBRecordActivity(String strSelectedId){
-
-        Intent i = new Intent();
-
+    public void openDBRecordActivity(Integer selectedId){
         Intent intent = new Intent(this, ActivityDBRecord.class);
-        //String selectedDateString = String.format("%1$04d-%2$02d-%3$02d", selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDay());
-        String strSelectedDate = dateToString(selectedDate);
-        intent.putExtra(String.valueOf(R.string.selected_date), strSelectedDate);
-        intent.putExtra(String.valueOf(R.string.selected_id), strSelectedId);
+
+        intent.putExtra(String.valueOf(R.string.selected_date), dateToString(selectedDate));
+        intent.putExtra(String.valueOf(R.string.selected_id), selectedId);
         startActivity(intent);
     }
 
     public void OnClickAdd(View view) {
-        openDBRecordActivity("");
+        openDBRecordActivity(new Integer(-1));
     }
 
     public DateTime dateToDateTime(Date date) {
