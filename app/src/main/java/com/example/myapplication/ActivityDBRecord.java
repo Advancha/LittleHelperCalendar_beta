@@ -20,30 +20,33 @@ import java.util.Calendar;
 
 
 public class ActivityDBRecord extends FragmentActivity {
-    private static EditText time;
-    private static TextView date;
-    private TextView client;
-    private TextView price;
-    private TextView note;
+    private static EditText tvTime;
+    private static TextView tvDate;
+    private TextView tvClient;
+    private TextView tvPrice;
+    private TextView tvNote;
 
-    private Integer selectedID;
+    private static Integer selectedID;
     private static Integer EMPTY_ID=new Integer(-1);
+    private Calendar calSelectedDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dbrecord);
 
-        date = (TextView) findViewById(R.id.date);
-        time = (EditText) findViewById(R.id.time);
-        client = (TextView) findViewById(R.id.client);
-        note = (TextView) findViewById(R.id.note);
-        price = (TextView) findViewById(R.id.price);
+        tvDate = (TextView) findViewById(R.id.date);
+        tvTime = (EditText) findViewById(R.id.time);
+        tvClient = (TextView) findViewById(R.id.client);
+        tvNote = (TextView) findViewById(R.id.note);
+        tvPrice = (TextView) findViewById(R.id.price);
 
         Intent i = getIntent();
         String selectedDate = i.getStringExtra(String.valueOf(R.string.selected_date));
         selectedID = i.getIntExtra(String.valueOf(R.string.selected_id), EMPTY_ID);
-        date.setText(selectedDate);
+        tvDate.setText(selectedDate);
+
+
 
         if (!selectedID.equals(EMPTY_ID)) {
               selectDBRecord(selectedID);
@@ -103,10 +106,10 @@ public class ActivityDBRecord extends FragmentActivity {
             String strPrice = cursor.getString(cursor.getColumnIndexOrThrow(DBContract.LittleCalendar.COLUMN_NAME_PRICE));
             String strNote = cursor.getString(cursor.getColumnIndexOrThrow(DBContract.LittleCalendar.COLUMN_NAME_NOTE));
 
-            time.setText(strTime);
-            client.setText(strClient);
-            note.setText(strNote);
-            price.setText(strPrice);
+            tvTime.setText(strTime);
+            tvClient.setText(strClient);
+            tvNote.setText(strNote);
+            tvPrice.setText(strPrice);
         }
         else{
             System.out.println("Cursor is empty");
@@ -137,10 +140,10 @@ public class ActivityDBRecord extends FragmentActivity {
 
     public void onSave(View view) {
         if (selectedID.equals(EMPTY_ID)) {
-            addDBRecord(date.getText().toString(), time.getText().toString(), client.getText().toString(), price.getText().toString(), note.getText().toString());
+            addDBRecord(tvDate.getText().toString(), tvTime.getText().toString(), tvClient.getText().toString(), tvPrice.getText().toString(), tvNote.getText().toString());
         }
         else{
-            updDBRecord(date.getText().toString(), time.getText().toString(), client.getText().toString(), price.getText().toString(), note.getText().toString());
+            updDBRecord(tvDate.getText().toString(), tvTime.getText().toString(), tvClient.getText().toString(), tvPrice.getText().toString(), tvNote.getText().toString());
         }
         this.finish();
     }
@@ -156,17 +159,35 @@ public class ActivityDBRecord extends FragmentActivity {
         this.finish();
     }
 
+    public void onDecrDate(View view)
+    {
+
+        return;
+    }
+
+    public void onIncrDate(View view)
+    {
+        return;
+    }
+
 
     public static class TimePickerFragment extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current time as the default values for the picker
-            final Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
-
+            int hour;
+            int minute;
+            if (selectedID.equals(EMPTY_ID)) {
+                // Use the current time as the default values for the picker
+                final Calendar c = Calendar.getInstance();
+                hour = c.get(Calendar.HOUR_OF_DAY);
+                minute = 0;
+            }
+            else{
+                hour =Integer.parseInt((tvTime.getText().toString()).substring(0,2));
+                minute =Integer.parseInt((tvTime.getText().toString()).substring(3,5));
+            }
             // Create a new instance of TimePickerDialog and return it
             return new TimePickerDialog(getActivity(), 1, this, hour, minute,
                     DateFormat.is24HourFormat(getActivity()));
@@ -174,7 +195,9 @@ public class ActivityDBRecord extends FragmentActivity {
 
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             // Do something with the time chosen by the user
-            time.setText(String.format("%1$02d:%2$02d",hourOfDay,minute));
+            tvTime.setText(String.format("%1$02d:%2$02d",hourOfDay,minute));
         }
+
+
     }
 }

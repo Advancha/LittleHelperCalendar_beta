@@ -11,21 +11,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_margin="@dimen/layout_margin">
+            android:layout_margin="@dimen/layout_margin"
+            >
             <TextView
-                android:layout_width="@dimen/text_view_w"
-                android:layout_height="@dimen/text_view_h"
-                android:textSize="@dimen/text_size"
-                android:text="@string/date"
-
+                style="@style/TextForDetails"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/left_arrow"
+                android:onClick="onDecrDate"
+                android:gravity="center"
                 />
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/text_view_h"
-                android:textSize="@dimen/text_size"
+                style="@style/TextForDetails"
+                android:layout_width="0dp"
+                android:layout_weight="2"
                 android:id="@+id/date"
+                android:text="date"
+                android:gravity="center"
+
                 >
             </TextView>
+            <TextView
+                style="@style/TextForDetails"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/right_arrow"
+                android:onClick="onIncrDate"
+                android:gravity="center"
+                />
         </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

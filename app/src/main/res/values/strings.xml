@@ -13,4 +13,5 @@
     <string name="note">Note</string>
     <string name="price">Price</string>
     <string name="add_new">Додати...</string>
+    <string name="title_activity_client_list">ClientListActivity</string>
 </resources>

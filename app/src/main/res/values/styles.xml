@@ -16,6 +16,7 @@
         <item name="android:layout_marginBottom">0dp</item>
         <item name="android:layout_marginRight">0dp</item>
     </style>
+
     <style name="NormalTextView">
         <item name="android:textSize">15dp</item>
         <item name="android:paddingLeft">@dimen/text_padding</item>
@@ -27,12 +28,22 @@
     <style name="EditTextForDetails">
         <item name="android:layout_height">@dimen/text_view_h</item>
         <item name="android:textSize">@dimen/text_size</item>
-        <item name="android:textColor">@color/caldroid_darker_gray</item>
+        <item name="android:textColor">@color/primary_text</item>
         <item name="android:background">@drawable/black_border</item>
     </style>
+
     <style name="TextForDetails">
         <item name="android:layout_height">@dimen/text_view_h</item>
-        <item name="android:textColor">@color/caldroid_darker_gray</item>
+        <item name="android:textColor">@color/primary_text</item>
         <item name="android:textSize">@dimen/text_size</item>
     </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
