@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -82,6 +84,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 */
 
+            }
+        });
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_new_visit);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                OnClickAdd(view);
+              //  Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+              //          .setAction("Action", null).show();
             }
         });
 
@@ -175,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void OnClickAdd(View view) {
+
         openDBRecordActivity(new Integer(-1));
     }
 
