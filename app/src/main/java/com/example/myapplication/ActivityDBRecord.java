@@ -4,7 +4,9 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -18,8 +20,15 @@ import android.widget.TimePicker;
 
 import java.util.Calendar;
 
+import hirondelle.date4j.DateTime;
+
+import static com.example.myapplication.MainActivity.APP_PREFERENCES;
+import static com.example.myapplication.MainActivity.APP_PREFERENCES_SELECTED_DATE;
+
 
 public class ActivityDBRecord extends FragmentActivity {
+    private SharedPreferences mSettings;
+
     private static EditText tvTime;
     private static TextView tvDate;
     private TextView tvClient;
@@ -28,12 +37,14 @@ public class ActivityDBRecord extends FragmentActivity {
 
     private static Integer selectedID;
     private static Integer EMPTY_ID=new Integer(-1);
-    private Calendar calSelectedDate;
+    private DateTime calSelectedDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dbrecord);
+
+        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
         tvDate = (TextView) findViewById(R.id.date);
         tvTime = (EditText) findViewById(R.id.time);
@@ -42,18 +53,32 @@ public class ActivityDBRecord extends FragmentActivity {
         tvPrice = (TextView) findViewById(R.id.price);
 
         Intent i = getIntent();
-        String selectedDate = i.getStringExtra(String.valueOf(R.string.selected_date));
         selectedID = i.getIntExtra(String.valueOf(R.string.selected_id), EMPTY_ID);
-        tvDate.setText(selectedDate);
+        Integer selected_year = i.getIntExtra(String.valueOf(R.string.selected_date_year), 1900);
+        Integer selected_month = i.getIntExtra(String.valueOf(R.string.selected_date_month), 1);
+        Integer selected_day = i.getIntExtra(String.valueOf(R.string.selected_date_day), 1);
 
-
+        calSelectedDate = new DateTime(selected_year,selected_month,selected_day,0,0,0,0);
+        set_tvDate(calSelectedDate);
 
         if (!selectedID.equals(EMPTY_ID)) {
               selectDBRecord(selectedID);
         }
     }
 
+    @Override
+    protected void onPause() {
 
+        SharedPreferences.Editor editor = mSettings.edit();
+        editor.putString(APP_PREFERENCES_SELECTED_DATE, tvDate.getText().toString());
+        editor.apply();
+
+        super.onPause();
+
+    }
+    public void set_tvDate(DateTime calDate){
+        tvDate.setText(String.format("%1$04d-%2$02d-%3$02d",calDate.getYear(),calDate.getMonth(),calDate.getDay()));
+    }
     public void addDBRecord(String date, String time, String client, String price, String note){
         DBHelper mDbHelper = new DBHelper(this);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -161,13 +186,14 @@ public class ActivityDBRecord extends FragmentActivity {
 
     public void onDecrDate(View view)
     {
-
-        return;
+        calSelectedDate=calSelectedDate.minusDays(1);
+        set_tvDate(calSelectedDate);
     }
 
     public void onIncrDate(View view)
     {
-        return;
+        calSelectedDate=calSelectedDate.plusDays(1);
+        set_tvDate(calSelectedDate);
     }
 
 

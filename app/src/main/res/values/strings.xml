@@ -6,6 +6,9 @@
     <string name="back">Back</string>
     <string name="selected_date">selected_date</string>
     <string name="selected_id">selected_id</string>
+    <string name="selected_date_year">selected_date_year</string>
+    <string name="selected_date_month">selected_date_month</string>
+    <string name="selected_date_day">selected_date_day</string>
 
     <string name="date">Date</string>
     <string name="time">Time</string>

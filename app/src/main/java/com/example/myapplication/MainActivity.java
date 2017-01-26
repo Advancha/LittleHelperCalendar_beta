@@ -164,8 +164,13 @@ public class MainActivity extends AppCompatActivity {
     public void openDBRecordActivity(Integer selectedId){
         Intent intent = new Intent(this, ActivityDBRecord.class);
 
-        intent.putExtra(String.valueOf(R.string.selected_date), dateToString(selectedDate));
+        //intent.putExtra(String.valueOf(R.string.selected_date), dateToString(selectedDate));
         intent.putExtra(String.valueOf(R.string.selected_id), selectedId);
+
+        intent.putExtra(String.valueOf(R.string.selected_date_year),selectedDate.getYear());
+        intent.putExtra(String.valueOf(R.string.selected_date_month),selectedDate.getMonth());
+        intent.putExtra(String.valueOf(R.string.selected_date_day),selectedDate.getDay());
+
         startActivity(intent);
     }
 
