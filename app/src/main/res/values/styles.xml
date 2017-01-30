@@ -9,6 +9,13 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="AppDlgTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:icon">@color/icons</item>
+    </style>
+
     <style name="LargeTextView">
         <item name="android:textSize">25dp</item>
         <item name="android:paddingLeft">@dimen/text_padding</item>
@@ -30,7 +37,7 @@
         <item name="android:layout_height">@dimen/text_view_h</item>
         <item name="android:textSize">@dimen/text_size</item>
         <item name="android:textColor">@color/primary_text</item>
-        <item name="android:background">@drawable/black_border</item>
+
     </style>
 
     <style name="TextForDetails">

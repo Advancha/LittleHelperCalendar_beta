@@ -22,12 +22,8 @@ import java.util.Calendar;
 
 import hirondelle.date4j.DateTime;
 
-import static com.example.myapplication.MainActivity.APP_PREFERENCES;
-import static com.example.myapplication.MainActivity.APP_PREFERENCES_SELECTED_DATE;
-
 
 public class ActivityDBRecord extends FragmentActivity {
-    private SharedPreferences mSettings;
 
     private static EditText tvTime;
     private static TextView tvDate;
@@ -43,8 +39,6 @@ public class ActivityDBRecord extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dbrecord);
-
-        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
         tvDate = (TextView) findViewById(R.id.date);
         tvTime = (EditText) findViewById(R.id.time);
@@ -66,16 +60,19 @@ public class ActivityDBRecord extends FragmentActivity {
         }
     }
 
-    @Override
-    protected void onPause() {
 
-        SharedPreferences.Editor editor = mSettings.edit();
-        editor.putString(APP_PREFERENCES_SELECTED_DATE, tvDate.getText().toString());
-        editor.apply();
 
-        super.onPause();
-
+    protected void giveBackSelectedDate() {
+        Intent i = new Intent();
+        i.putExtra(String.valueOf(R.string.selected_date_year), calSelectedDate.getYear());
+        i.putExtra(String.valueOf(R.string.selected_date_month), calSelectedDate.getMonth());
+        i.putExtra(String.valueOf(R.string.selected_date_day), calSelectedDate.getDay());
+        setResult(RESULT_OK, i);
+        this.finish();
     }
+
+
+
     public void set_tvDate(DateTime calDate){
         tvDate.setText(String.format("%1$04d-%2$02d-%3$02d",calDate.getYear(),calDate.getMonth(),calDate.getDay()));
     }
@@ -170,18 +167,18 @@ public class ActivityDBRecord extends FragmentActivity {
         else{
             updDBRecord(tvDate.getText().toString(), tvTime.getText().toString(), tvClient.getText().toString(), tvPrice.getText().toString(), tvNote.getText().toString());
         }
-        this.finish();
+        giveBackSelectedDate();
     }
 
     public void onBack(View view) {
-        this.finish();
+        finish();
     }
 
     public void onDel(View view) {
         if (!selectedID.equals(EMPTY_ID)) {
             delDBRecord();
         }
-        this.finish();
+        finish();
     }
 
     public void onDecrDate(View view)
