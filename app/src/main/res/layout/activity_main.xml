@@ -7,8 +7,7 @@
     android:fitsSystemWindows="true"
     tools:context="com.example.myapplication.MainActivity">
 
-    <include layout="@layout/content_activity_main"
-         />
+    <include layout="@layout/content_activity_main"></include>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_new_visit"
@@ -16,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_input_add"
+        app:srcCompat="@drawable/ic_action_new"
         android:tint="@color/icons"
         app:backgroundTint="@color/accent"
         app:fabSize="normal" />

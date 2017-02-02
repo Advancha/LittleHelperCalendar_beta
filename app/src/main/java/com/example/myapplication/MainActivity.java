@@ -9,9 +9,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -69,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSelectedDateFromSettings();
 
+
         clientList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -100,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 onCalDataChange(selectedDate);
 
                 tvSelectedDate.setText(dateToString(selectedDate));
+
             }
 
             @Override
@@ -113,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle args = new Bundle();
         args.putInt(CaldroidFragment.MONTH, selectedDate.getMonth());
         args.putInt(CaldroidFragment.YEAR, selectedDate.getYear());
-        args.putBoolean(CaldroidFragment.SIX_WEEKS_IN_CALENDAR, false);
+        args.putBoolean(CaldroidFragment.SIX_WEEKS_IN_CALENDAR, true);
         args.putBoolean(CaldroidFragment.SQUARE_TEXT_VIEW_CELL, false);
         args.putInt(CaldroidFragment.START_DAY_OF_WEEK, CaldroidFragment.MONDAY);
         caldroidFragment.setArguments(args);
@@ -130,6 +137,25 @@ public class MainActivity extends AppCompatActivity {
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_clients:
+                onClickMenuClients();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void updCaldroidFragment(){
 
 
@@ -137,17 +163,18 @@ public class MainActivity extends AppCompatActivity {
         caldroidFragment.setExtraData(extraData);
         caldroidFragment.refreshView();
 
-
         onCalDataChange(selectedDate);
         tvSelectedDate.setText(dateToString(selectedDate));
+
 
 
     }
     @Override
     protected void onResume() {
         super.onResume();
-        setSelectedDateFromSettings();
-        onCalDataChange(selectedDate);
+
+       // setSelectedDateFromSettings();
+        // onCalDataChange(selectedDate);
 
     }
 
@@ -188,18 +215,10 @@ public class MainActivity extends AppCompatActivity {
                 selectedDate=calSelectedDate;
 
                 SharedPreferences.Editor editor = mSettings.edit();
-                //editor.putString(APP_PREFERENCES_SELECTED_DATE, dateToString(selectedDate));
                 editor.apply();
 
                 updCaldroidFragment();
                 caldroidFragment.moveToDateTime(selectedDate);
-                /*
-                extraData.put("SELECTED_DATE", selectedDate);
-                caldroidFragment.setExtraData(extraData);
-                caldroidFragment.refreshView();
-                onCalDataChange(selectedDate);
-*/
-                //System.out.print("ActivityMain onActivityResult");
 
             }
         }
@@ -225,6 +244,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onCalDataChange(DateTime date) {
+
         DBHelper dbHelper = new DBHelper(this);
         SQLiteDatabase db;
         db = dbHelper.getReadableDatabase();
@@ -264,6 +284,11 @@ public class MainActivity extends AppCompatActivity {
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
+    public void onClickMenuClients(){
+        Intent i = new Intent(this,ActivityClientList.class);
+        startActivity(i);
+    }
+
     public Action getIndexApiAction() {
         Thing object = new Thing.Builder()
                 .setName("Main Page") // TODO: Define a title for the content shown.
