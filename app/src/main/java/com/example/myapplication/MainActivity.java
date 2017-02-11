@@ -1,6 +1,6 @@
 package com.example.myapplication;
 
-import android.app.ActionBar;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,13 +8,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +38,7 @@ import hirondelle.date4j.DateTime;
 
 public class MainActivity extends AppCompatActivity {
     static final int PICK_SELECTED_DATE = 1;
+    static final int PICK_CONTACT=2;
 
     public static final String APP_PREFERENCES = "mysettings";
     public static final String APP_PREFERENCES_SELECTED_DAY = "selected_day";
@@ -51,10 +50,10 @@ public class MainActivity extends AppCompatActivity {
     private DateTime selectedDate;
     private Map extraData = new HashMap<String, DateTime>();
     private Bundle args = new Bundle();
-    private ListView clientList;
+    private ListView lv_visitList;
     private TextView tvSelectedDate;
     private Cursor cursor;
-    private CustomCursorAdapter cursorAdapter;
+    private VisitsCursorAdapter cursorAdapter;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -69,17 +68,17 @@ public class MainActivity extends AppCompatActivity {
 
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         tvSelectedDate = (TextView) findViewById(R.id.selected_date);
-        clientList = (ListView) findViewById(R.id.client_list);
+        lv_visitList = (ListView) findViewById(R.id.visit_list);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_new_visit);
 
         setSelectedDateFromSettings();
 
 
-        clientList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lv_visitList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Integer selected_id=cursor.getInt(cursor.getColumnIndexOrThrow(DBContract.LittleCalendar._ID));
+                Integer selected_id=cursor.getInt(cursor.getColumnIndexOrThrow(DBContract.TabVisits._ID));
                 openDBRecordActivity(selected_id);
             }
         });
@@ -148,8 +147,11 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_clients:
-                onClickMenuClients();
+            case R.id.action_open_clients:
+                onClickMenuOpenClientList();
+                return true;
+            case R.id.action_import_clients:
+                onClickMenuImportClients();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -161,7 +163,9 @@ public class MainActivity extends AppCompatActivity {
 
         extraData.put("SELECTED_DATE", selectedDate);
         caldroidFragment.setExtraData(extraData);
+     //   caldroidFragment.moveToDateTime(selectedDate);
         caldroidFragment.refreshView();
+
 
         onCalDataChange(selectedDate);
         tvSelectedDate.setText(dateToString(selectedDate));
@@ -173,7 +177,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-       // setSelectedDateFromSettings();
+        setSelectedDateFromSettings();
+        updCaldroidFragment();
+
         // onCalDataChange(selectedDate);
 
     }
@@ -181,18 +187,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
 
+        super.onPause();
+
         SharedPreferences.Editor editor = mSettings.edit();
         editor.putString(APP_PREFERENCES_SELECTED_DAY, selectedDate.getDay().toString());
         editor.putString(APP_PREFERENCES_SELECTED_MONTH, selectedDate.getMonth().toString());
         editor.putString(APP_PREFERENCES_SELECTED_YEAR, selectedDate.getYear().toString());
         editor.apply();
 
-        super.onPause();
 
     }
 
     public void openDBRecordActivity(Integer selectedId){
-        Intent intent = new Intent(this, ActivityDBRecord.class);
+        Intent intent = new Intent(this, ActivityVisit.class);
 
         intent.putExtra(String.valueOf(R.string.selected_id), selectedId);
         intent.putExtra(String.valueOf(R.string.selected_date_year),selectedDate.getYear());
@@ -205,25 +212,69 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_SELECTED_DATE) {
-            if (resultCode == RESULT_OK) {
-                Integer selected_year = data.getIntExtra(String.valueOf(R.string.selected_date_year), 1900);
-                Integer selected_month = data.getIntExtra(String.valueOf(R.string.selected_date_month), 1);
-                Integer selected_day = data.getIntExtra(String.valueOf(R.string.selected_date_day), 1);
 
-                DateTime calSelectedDate = new DateTime(selected_year, selected_month, selected_day, 0, 0, 0, 0);
-                selectedDate=calSelectedDate;
-
-                SharedPreferences.Editor editor = mSettings.edit();
-                editor.apply();
-
-                updCaldroidFragment();
-                caldroidFragment.moveToDateTime(selectedDate);
-
+        switch (requestCode) {
+            case (PICK_CONTACT): {
+                if (resultCode == RESULT_OK) {
+                    contactPicked(data);
+                }
             }
+
+            case (PICK_SELECTED_DATE): {
+                if (resultCode == RESULT_OK) {
+                    Integer selected_year = data.getIntExtra(String.valueOf(R.string.selected_date_year), 1900);
+                    Integer selected_month = data.getIntExtra(String.valueOf(R.string.selected_date_month), 1);
+                    Integer selected_day = data.getIntExtra(String.valueOf(R.string.selected_date_day), 1);
+
+                    DateTime calSelectedDate = new DateTime(selected_year, selected_month, selected_day, 0, 0, 0, 0);
+                    selectedDate = calSelectedDate;
+
+                    SharedPreferences.Editor editor = mSettings.edit();
+                    editor.apply();
+
+                }
+            }
+            caldroidFragment.moveToDateTime(selectedDate);
+            updCaldroidFragment();
+
         }
     }
 
+    private void contactPicked(Intent data) {
+        Cursor cursor = null;
+        try {
+            String phoneNo = null ;
+            String name = null;
+            Uri uri = data.getData();
+            cursor = getContentResolver().query(uri, null, null, null, null);
+            cursor.moveToFirst();
+            int  phoneIndex =cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+            int  nameIndex =cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+            //int  idIndex =cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID);
+
+            phoneNo = cursor.getString(phoneIndex);
+            name = cursor.getString(nameIndex);
+
+            addDBRecord_TabClients(name, phoneNo);
+            //System.out.println("Name "+name+" number "+phoneNo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addDBRecord_TabClients(String str_name, String str_phone){
+        DBHelper mDbHelper = new DBHelper(this);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DBContract.TabClients.COLUMN_NAME_NAME, str_name);
+        values.put(DBContract.TabClients.COLUMN_NAME_PHONE, str_phone);
+
+       db.insert(
+                DBContract.TabClients.TABLE_NAME,
+                null,
+                values);
+    }
     public void OnClickAdd(View view) {
 
         openDBRecordActivity(new Integer(-1));
@@ -250,17 +301,19 @@ public class MainActivity extends AppCompatActivity {
         db = dbHelper.getReadableDatabase();
         String selectedDateString = dateToString(date);
 
-        String selection = DBContract.LittleCalendar.COLUMN_NAME_DATE + "=?";
-        String order = DBContract.LittleCalendar.COLUMN_NAME_TIME;
-        String query = "SELECT * FROM " + DBContract.LittleCalendar.TABLE_NAME
+        String selection = DBContract.TabVisits.COLUMN_NAME_DATE + "=?";
+        String order = DBContract.TabVisits.COLUMN_NAME_TIME;
+        String query = "SELECT * FROM " + DBContract.TabVisits.TABLE_NAME
+                + " LEFT JOIN "+DBContract.TabClients.TABLE_NAME
+                + " ON "+DBContract.TabVisits.TABLE_NAME+"."+DBContract.TabVisits.COLUMN_NAME_CLIENT_ID +"="+DBContract.TabClients.TABLE_NAME+"."+DBContract.TabClients._ID
                 + " WHERE " + selection
                 + " ORDER BY " + order + " ASC";
         String[] selectionArgs = new String[]{selectedDateString};
 
         try {
             cursor = db.rawQuery(query, selectionArgs);
-            cursorAdapter = new CustomCursorAdapter(this, cursor);
-            clientList.setAdapter(cursorAdapter);
+            cursorAdapter = new VisitsCursorAdapter(this, cursor);
+            lv_visitList.setAdapter(cursorAdapter);
             cursorAdapter.changeCursor(cursor);
 
 
@@ -284,11 +337,17 @@ public class MainActivity extends AppCompatActivity {
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
-    public void onClickMenuClients(){
+    public void onClickMenuOpenClientList(){
         Intent i = new Intent(this,ActivityClientList.class);
         startActivity(i);
     }
 
+    public void onClickMenuImportClients(){
+        Intent intent= new Intent(Intent.ACTION_PICK,  ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+
+        startActivityForResult(intent, PICK_CONTACT);
+
+    }
     public Action getIndexApiAction() {
         Thing object = new Thing.Builder()
                 .setName("Main Page") // TODO: Define a title for the content shown.

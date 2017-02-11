@@ -16,6 +16,10 @@
     <string name="note">Note</string>
     <string name="price">Price</string>
     <string name="clients">Clients</string>
+    <string name="str_open_clients">Open list of clients</string>
+    <string name="str_import_clients">Import clients from contacts</string>
+    <string name="str_client_name">Client name</string>
+    <string name="str_client_phone">Client phone</string>
     <string name="visits">Visits</string>
     <string name="add_new">New...</string>
     <string name="title_activity_client_list">ClientListActivity</string>
