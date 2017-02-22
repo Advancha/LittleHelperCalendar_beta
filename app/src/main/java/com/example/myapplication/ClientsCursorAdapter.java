@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.FilterQueryProvider;
 import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,7 +25,7 @@ public class ClientsCursorAdapter extends CursorAdapter implements Filterable {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        LinearLayout lcListLayout = (LinearLayout)view.findViewById(R.id.client_list_cell_layout);
+//        LinearLayout lcListLayout = (LinearLayout)view.findViewById(R.id.client_list_cell_layout);
 
         TextView lcName = (TextView)view.findViewById(R.id.list_cell_client_name);
         TextView lcPhone = (TextView)view.findViewById(R.id.list_cell_client_phone);
@@ -43,4 +44,6 @@ public class ClientsCursorAdapter extends CursorAdapter implements Filterable {
     public CharSequence convertToString(Cursor cursor) {
         return cursor.getString(cursor.getColumnIndexOrThrow(DBContract.TabClients.COLUMN_NAME_NAME));
     }
+
+
 }

@@ -65,7 +65,6 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db;
         db = this.getReadableDatabase();
 
-        //  String selection = DBContract.TabClients.COLUMN_NAME_DATE + "=?";
         String order = DBContract.TabClients.COLUMN_NAME_NAME;
         String query = "SELECT * FROM " + DBContract.TabClients.TABLE_NAME
                 + " ORDER BY " + order + " ASC";
@@ -77,6 +76,32 @@ public class DBHelper extends SQLiteOpenHelper {
             return null;
 
         }
+
+    }
+
+    public Cursor getFilteredCursorForClientList(CharSequence str){
+        SQLiteDatabase db;
+        db = this.getReadableDatabase();
+
+        String order = DBContract.TabClients.COLUMN_NAME_NAME;
+        String query = "SELECT * FROM " + DBContract.TabClients.TABLE_NAME
+                + " WHERE "+ order + " LIKE '%"+str+"%'"
+                + " ORDER BY " + order + " ASC";
+        try {
+            Cursor cursor = db.rawQuery(query, null);
+            return cursor;
+        } catch (SQLiteException e) {
+            System.out.println(e.getMessage());
+            return null;
+
+        }
+
+    }
+
+    public void deleteClient(int _id){
+        SQLiteDatabase db;
+        db = this.getReadableDatabase();
+        db.delete(DBContract.TabClients.TABLE_NAME," _id="+String.valueOf(_id),null);
 
     }
 }

@@ -14,6 +14,7 @@ import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.FilterQueryProvider;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -48,9 +49,16 @@ public class ActivityVisit extends FragmentActivity {
         tvNote = (TextView) findViewById(R.id.note);
         tvPrice = (TextView) findViewById(R.id.price);
 
-        DBHelper dbHelper = new DBHelper(this);
+        final DBHelper dbHelper = new DBHelper(this);
         cursor = dbHelper.getCursorForClientList();
         adapter = new ClientsCursorAdapter(this, cursor);
+        adapter.setFilterQueryProvider(new FilterQueryProvider() {
+            @Override
+            public Cursor runQuery(CharSequence constraint) {
+                return dbHelper.getFilteredCursorForClientList(constraint);
+            }
+        });
+
         tvClient.setAdapter(adapter);
 
         Intent i = getIntent();
