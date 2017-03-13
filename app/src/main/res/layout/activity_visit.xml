@@ -133,7 +133,7 @@
     </LinearLayout>
     </LinearLayout>
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_save"
+        android:id="@+id/fab_save_visit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -141,8 +141,7 @@
         app:srcCompat="@drawable/ic_action_done"
         android:tint="@color/icons"
         app:backgroundTint="@color/accent"
-        app:fabSize="normal"
-        android:onClick="onSave"/>
+        app:fabSize="normal"/>
 
 </FrameLayout>
 

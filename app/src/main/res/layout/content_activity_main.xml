@@ -20,17 +20,12 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/selected_date"
-        android:text="@string/selected_date"
-        android:background="@color/primary_light"
-        android:layout_marginTop="6dp"
-        />
+        android:id="@+id/selected_date"/>
+    <fragment android:name="com.example.myapplication.VisitsListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragment_visit_list">
 
-
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/visit_list"
-            />
+    </fragment>
 
 </LinearLayout>

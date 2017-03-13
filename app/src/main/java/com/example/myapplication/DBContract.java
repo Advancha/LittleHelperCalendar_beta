@@ -18,7 +18,7 @@ public final class DBContract {
         public static final String TABLE_NAME = "calendar";
         //public static final String COLUMN_NAME_ENTRY_ID = "entryid";
         public static final String COLUMN_NAME_CLIENT_ID = "clientid";
-        public static final String COLUMN_NAME_CLIENT = "client";
+      //  public static final String COLUMN_NAME_CLIENT = "client";
         public static final String COLUMN_NAME_DATE = "date";
         public static final String COLUMN_NAME_PRICE = "price";
         public static final String COLUMN_NAME_TIME = "time";

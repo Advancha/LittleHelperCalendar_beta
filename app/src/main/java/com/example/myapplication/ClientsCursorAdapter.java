@@ -15,8 +15,12 @@ import android.widget.TextView;
  */
 
 public class ClientsCursorAdapter extends CursorAdapter implements Filterable {
+    private DBHelper dbHelper;
+
     public ClientsCursorAdapter(Context context, Cursor cursor){
         super(context,cursor,0);
+        dbHelper = new DBHelper(context);
+
     }
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
@@ -45,5 +49,30 @@ public class ClientsCursorAdapter extends CursorAdapter implements Filterable {
         return cursor.getString(cursor.getColumnIndexOrThrow(DBContract.TabClients.COLUMN_NAME_NAME));
     }
 
+    @Override
+    public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
+        Cursor currentCursor = null;
+
+        if (getFilterQueryProvider() != null)
+        {
+            return getFilterQueryProvider().runQuery(constraint);
+        }
+
+        String args = "";
+
+        if (constraint != null)
+        {
+            args = constraint.toString();
+        }
+
+        currentCursor =  dbHelper.getFilteredCursorForClientList(args);
+
+        return currentCursor;
+    }
+
+    public void close()
+    {
+        dbHelper.close();
+    }
 
 }

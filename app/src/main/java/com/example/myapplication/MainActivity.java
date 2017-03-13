@@ -1,12 +1,12 @@
 package com.example.myapplication;
 
+import android.app.FragmentManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
@@ -16,8 +16,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.Date;
@@ -28,7 +26,6 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.roomorama.caldroid.CaldroidFragment;
@@ -36,8 +33,8 @@ import com.roomorama.caldroid.CaldroidListener;
 
 import hirondelle.date4j.DateTime;
 
-public class MainActivity extends AppCompatActivity {
-    static final int PICK_SELECTED_DATE = 1;
+public class MainActivity extends AppCompatActivity implements VisitsListFragment.OnFragmentInteractionListener{
+    static final int UPD_VISIT_LIST = 1;
     static final int PICK_CONTACT=2;
 
     public static final String APP_PREFERENCES = "mysettings";
@@ -50,10 +47,12 @@ public class MainActivity extends AppCompatActivity {
     private DateTime selectedDate;
     private Map extraData = new HashMap<String, DateTime>();
     private Bundle args = new Bundle();
-    private ListView lv_visitList;
+//    private ListView lv_visitList;
     private TextView tvSelectedDate;
-    private Cursor cursor;
-    private VisitsCursorAdapter cursorAdapter;
+    private FragmentManager fragmentManager;
+    private VisitsListFragment vlFragment;
+//    private Cursor cursor;
+//    private VisitsCursorAdapter cursorAdapter;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -66,14 +65,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+
         tvSelectedDate = (TextView) findViewById(R.id.selected_date);
-        lv_visitList = (ListView) findViewById(R.id.visit_list);
+
+  //      lv_visitList = (ListView) findViewById(R.id.visit_list);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_new_visit);
 
-        setSelectedDateFromSettings();
-
-
+        selectedDate=getSelectedDayFromSettings();
+        vlFragment = (VisitsListFragment)(getSupportFragmentManager().findFragmentById(R.id.fragment_visit_list));
+/*
         lv_visitList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+*/
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+     //   client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -158,6 +158,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public DateTime getSelectedDate(){
+        if (selectedDate==null){
+            return getSelectedDayFromSettings();
+        }
+        else {
+            return selectedDate;
+        }
+    }
+
+    public String getStringSelectedDate(){
+            return dateToString(getSelectedDate());
+    }
+
     private void updCaldroidFragment(){
 
 
@@ -177,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        setSelectedDateFromSettings();
+        selectedDate=getSelectedDayFromSettings();
         updCaldroidFragment();
 
         // onCalDataChange(selectedDate);
@@ -198,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     public void openDBRecordActivity(Integer selectedId){
         Intent intent = new Intent(this, ActivityVisit.class);
 
@@ -206,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(String.valueOf(R.string.selected_date_month),selectedDate.getMonth());
         intent.putExtra(String.valueOf(R.string.selected_date_day),selectedDate.getDay());
 
-        startActivityForResult(intent, PICK_SELECTED_DATE);
+        startActivityForResult(intent, UPD_VISIT_LIST);
     }
 
     @Override
@@ -220,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            case (PICK_SELECTED_DATE): {
+            case (UPD_VISIT_LIST): {
                 if (resultCode == RESULT_OK) {
                     Integer selected_year = data.getIntExtra(String.valueOf(R.string.selected_date_year), 1900);
                     Integer selected_month = data.getIntExtra(String.valueOf(R.string.selected_date_month), 1);
@@ -296,41 +310,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCalDataChange(DateTime date) {
 
-        DBHelper dbHelper = new DBHelper(this);
-        SQLiteDatabase db;
-        db = dbHelper.getReadableDatabase();
         String selectedDateString = dateToString(date);
+        vlFragment.onCalDateChanged(selectedDateString);
 
-        String selection = DBContract.TabVisits.COLUMN_NAME_DATE + "=?";
-        String order = DBContract.TabVisits.COLUMN_NAME_TIME;
-        String query = "SELECT * FROM " + DBContract.TabVisits.TABLE_NAME
-                + " LEFT JOIN "+DBContract.TabClients.TABLE_NAME
-                + " ON "+DBContract.TabVisits.TABLE_NAME+"."+DBContract.TabVisits.COLUMN_NAME_CLIENT_ID +"="+DBContract.TabClients.TABLE_NAME+"."+DBContract.TabClients._ID
-                + " WHERE " + selection
-                + " ORDER BY " + order + " ASC";
-        String[] selectionArgs = new String[]{selectedDateString};
-
-        try {
-            cursor = db.rawQuery(query, selectionArgs);
-            cursorAdapter = new VisitsCursorAdapter(this, cursor);
-            lv_visitList.setAdapter(cursorAdapter);
-            cursorAdapter.changeCursor(cursor);
-
-
-        } catch (SQLiteException e) {
-            System.out.println(e.getMessage());
-
-        }
 
     }
 
-    protected void setSelectedDateFromSettings() {
+    public DateTime getSelectedDayFromSettings() {
+        if (mSettings==null){
+            mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        }
+
         DateTime currentDate = DateTime.today(TimeZone.getDefault());
 
         Integer selectedDateDay = Integer.parseInt(mSettings.getString(APP_PREFERENCES_SELECTED_DAY, currentDate.getDay().toString()));
         Integer selectedDateMonth = Integer.parseInt(mSettings.getString(APP_PREFERENCES_SELECTED_MONTH, currentDate.getMonth().toString()));
         Integer selectedDateYear = Integer.parseInt(mSettings.getString(APP_PREFERENCES_SELECTED_YEAR, currentDate.getYear().toString()));
-        selectedDate = new DateTime(selectedDateYear,selectedDateMonth,selectedDateDay,0,0,0,0);
+        return new DateTime(selectedDateYear,selectedDateMonth,selectedDateDay,0,0,0,0);
     }
 
     /**
@@ -360,24 +356,22 @@ public class MainActivity extends AppCompatActivity {
                 .build();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+
+
+    @Override
+    public void onFragmentItemSeleted(int position) {
+
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public String onFragmentDataRequest() {
+        return getStringSelectedDate();
+    }
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
+    @Override
+    public Context onFragmentContextRequest(){
+        return this;
     }
 }
 

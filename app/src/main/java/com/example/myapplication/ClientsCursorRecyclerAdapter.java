@@ -23,7 +23,7 @@ import static com.example.myapplication.R.*;
  */
 
 public class ClientsCursorRecyclerAdapter extends CursorRecyclerAdapter<ClientsCursorRecyclerAdapter.ViewHolder>
-             implements ItemTouchHelperAdapter
+
 
 {
     public DBHelper mDbHelper;
@@ -88,12 +88,12 @@ public class ClientsCursorRecyclerAdapter extends CursorRecyclerAdapter<ClientsC
     public void onBindViewHolder(final ViewHolder holder, final Cursor cursor) {
         String strName = cursor.getString(cursor.getColumnIndexOrThrow(DBContract.TabClients.COLUMN_NAME_NAME));
         String strPhone = cursor.getString(cursor.getColumnIndexOrThrow(DBContract.TabClients.COLUMN_NAME_PHONE));
-        final int client_id = cursor.getInt(cursor.getColumnIndexOrThrow(DBContract.TabClients._ID));
+      //  final int client_id = cursor.getInt(cursor.getColumnIndexOrThrow(DBContract.TabClients._ID));
 
 
         holder.tvName.setText(strName);
         holder.tvPhone.setText(strPhone);
-        holder.llParent.setTag(id.TAG_CLIENT_ID, client_id);
+       // holder.llParent.setTag(id.TAG_CLIENT_ID, client_id);
 
         // Start a drag whenever the handle view it touched
         holder.llParent.setOnTouchListener(new View.OnTouchListener() {

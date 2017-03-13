@@ -33,9 +33,9 @@ import jp.wasabeef.recyclerview.animators.SlideInRightAnimator;
 
 public class ActivityClientList extends AppCompatActivity implements OnStartDragListener{
     public RecyclerView rvClientList;
-    public Cursor cursor;
+    //public Cursor cursor;
     private RecyclerView.LayoutManager mLayoutManager;
-    ClientsCursorRecyclerAdapter cursorAdapter;
+    private ClientsCursorRecyclerAdapter cursorAdapter;
 
     private ItemTouchHelper mItemTouchHelper;
 
@@ -88,7 +88,7 @@ public class ActivityClientList extends AppCompatActivity implements OnStartDrag
 
 
     @Override
-    public void onStartDrag(ClientsCursorRecyclerAdapter.ViewHolder viewHolder) {
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         mItemTouchHelper.startDrag(viewHolder);
     }
 }

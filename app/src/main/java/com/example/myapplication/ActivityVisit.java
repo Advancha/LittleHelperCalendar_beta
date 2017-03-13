@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -26,10 +27,10 @@ import hirondelle.date4j.DateTime;
 public class ActivityVisit extends FragmentActivity {
 
     private static EditText tvTime;
-    private static TextView tvDate;
+    private static EditText tvDate;
     private AutoCompleteTextView tvClient;
-    private TextView tvPrice;
-    private TextView tvNote;
+    private EditText tvPrice;
+    private EditText tvNote;
 
     private static Integer selectedID;
     private static Integer EMPTY_ID=new Integer(-1);
@@ -37,27 +38,29 @@ public class ActivityVisit extends FragmentActivity {
 
     private  Cursor cursor;
     private ClientsCursorAdapter adapter;
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_visit);
 
-        tvDate = (TextView) findViewById(R.id.date);
-        tvTime = (EditText) findViewById(R.id.time);
-        tvClient = (AutoCompleteTextView) findViewById(R.id.client);
-        tvNote = (TextView) findViewById(R.id.note);
-        tvPrice = (TextView) findViewById(R.id.price);
-
-        final DBHelper dbHelper = new DBHelper(this);
-        cursor = dbHelper.getCursorForClientList();
-        adapter = new ClientsCursorAdapter(this, cursor);
-        adapter.setFilterQueryProvider(new FilterQueryProvider() {
+        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab_save_visit);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public Cursor runQuery(CharSequence constraint) {
-                return dbHelper.getFilteredCursorForClientList(constraint);
+            public void onClick(View v) {
+                onSave(v);
             }
         });
+        tvDate = (EditText) findViewById(R.id.date);
+        tvTime = (EditText) findViewById(R.id.time);
+        tvClient = (AutoCompleteTextView) findViewById(R.id.client);
+        tvNote = (EditText) findViewById(R.id.note);
+        tvPrice = (EditText) findViewById(R.id.price);
+
+        dbHelper = new DBHelper(this);
+        cursor = dbHelper.getCursorForClientList();
+        adapter = new ClientsCursorAdapter(this, cursor);
 
         tvClient.setAdapter(adapter);
 
@@ -71,7 +74,7 @@ public class ActivityVisit extends FragmentActivity {
         set_tvDate(calSelectedDate);
 
         if (!selectedID.equals(EMPTY_ID)) {
-              selectDBRecord(selectedID);
+              setFields();
         }
     }
 
@@ -91,41 +94,6 @@ public class ActivityVisit extends FragmentActivity {
     public void set_tvDate(DateTime calDate){
         tvDate.setText(String.format("%1$04d-%2$02d-%3$02d",calDate.getYear(),calDate.getMonth(),calDate.getDay()));
     }
-    public void addDBRecord_TabVisits(String date, String time, String price, String note){
-        DBHelper mDbHelper = new DBHelper(this);
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        //values.put(DBContract.TabVisits.COLUMN_NAME_ENTRY_ID, 1);
-        values.put(DBContract.TabVisits.COLUMN_NAME_CLIENT_ID, cursor.getInt(cursor.getColumnIndex(DBContract.TabClients._ID)));
-        //values.put(DBContract.TabVisits.COLUMN_NAME_CLIENT, client);
-        values.put(DBContract.TabVisits.COLUMN_NAME_NOTE, note);
-        values.put(DBContract.TabVisits.COLUMN_NAME_DATE, date);
-        values.put(DBContract.TabVisits.COLUMN_NAME_TIME, time);
-        values.put(DBContract.TabVisits.COLUMN_NAME_DATE_TIME, ""+date+"T"+time+"");
-        values.put(DBContract.TabVisits.COLUMN_NAME_PRICE, price);
-
-        long newRowId;
-        newRowId = db.insert(
-                DBContract.TabVisits.TABLE_NAME,
-                null,
-                values);
-    }
-
-    public void updDBRecord_TabVisits(String date, String time, String price, String note){
-        DBHelper mDbHelper = new DBHelper(this);
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(DBContract.TabVisits.COLUMN_NAME_CLIENT_ID, cursor.getInt(cursor.getColumnIndex(DBContract.TabClients._ID)));
-        values.put(DBContract.TabVisits.COLUMN_NAME_NOTE, note);
-        values.put(DBContract.TabVisits.COLUMN_NAME_DATE, date);
-        values.put(DBContract.TabVisits.COLUMN_NAME_TIME, time);
-        values.put(DBContract.TabVisits.COLUMN_NAME_DATE_TIME, ""+date+"T"+time+"");
-        values.put(DBContract.TabVisits.COLUMN_NAME_PRICE, price);
-
-       db.update(DBContract.TabVisits.TABLE_NAME,values," _id="+selectedID,null);
-    }
     public void delDBRecord(){
         DBHelper mDbHelper = new DBHelper(this);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -133,8 +101,8 @@ public class ActivityVisit extends FragmentActivity {
         db.delete(DBContract.TabVisits.TABLE_NAME," _id="+selectedID,null);
     }
 
-    public void setFields(Cursor local_cursor){
-
+    public void setFields(){
+        Cursor local_cursor = dbHelper.getCursorForVisitByID(selectedID);
         if (local_cursor.getCount()>0) {
             local_cursor.moveToPosition(0);
 
@@ -165,56 +133,40 @@ public class ActivityVisit extends FragmentActivity {
         }
 
     }
-
-    public void selectDBRecord(Integer selectedID){
-        DBHelper dbHelper = new DBHelper(this);
-        SQLiteDatabase db;
-        db = dbHelper.getReadableDatabase();
-
-        String query = "SELECT * FROM "
-                + DBContract.TabVisits.TABLE_NAME+" WHERE _id=" + selectedID;
-        /*
-        String query = "SELECT * FROM "
-                + DBContract.TabVisits.TABLE_NAME
-                + " LEFT JOIN "+DBContract.TabClients.TABLE_NAME
-                + " ON "+DBContract.TabVisits.TABLE_NAME+"."+DBContract.TabVisits.COLUMN_NAME_CLIENT_ID +"="
-                + DBContract.TabClients.TABLE_NAME+"._id"
-                +" WHERE "+DBContract.TabVisits.TABLE_NAME+"._id=" + selectedID;
-                */
-        try {
-            setFields(db.rawQuery(query,null));
-        } catch (SQLiteException e) {
-            System.out.println(e.getMessage());
-
-        }
-    }
-
     public void showTimePickerDialog(View v) {
         DialogFragment newFragment = new TimePickerFragment();
         newFragment.show(getFragmentManager(), "timePicker");
     }
 
     public void onSave(View view) {
+        Integer client_id = adapter.getCursor().getInt(cursor.getColumnIndex(DBContract.TabClients._ID));
+        Integer visit_id = selectedID;
+        String date_text = tvDate.getText().toString();
+        String time_text = tvTime.getText().toString();
+        String price_text = tvPrice.getText().toString();
+        String note_text = tvNote.getText().toString();
+
         if (selectedID.equals(EMPTY_ID)) {
-            addDBRecord_TabVisits(tvDate.getText().toString(), tvTime.getText().toString(), tvPrice.getText().toString(), tvNote.getText().toString());
+            dbHelper.addDBRecord_TabVisits(date_text,time_text,price_text,note_text,client_id);
         }
         else{
-            updDBRecord_TabVisits(tvDate.getText().toString(), tvTime.getText().toString(), tvPrice.getText().toString(), tvNote.getText().toString());
+            dbHelper.updDBRecord_TabVisits(date_text,time_text,price_text,note_text,client_id,visit_id);
         }
         giveBackSelectedDate();
     }
+    /*
+       public void onBack(View view) {
+           finish();
+       }
 
-    public void onBack(View view) {
-        finish();
-    }
 
-    public void onDel(View view) {
-        if (!selectedID.equals(EMPTY_ID)) {
-            delDBRecord();
-        }
-        finish();
-    }
-
+       public void onDel(View view) {
+           if (!selectedID.equals(EMPTY_ID)) {
+               delDBRecord();
+           }
+           finish();
+       }
+   */
     public void onDecrDate(View view)
     {
         calSelectedDate=calSelectedDate.minusDays(1);

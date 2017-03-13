@@ -28,7 +28,8 @@ import android.database.DataSetObserver;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
-public abstract class CursorRecyclerAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+public abstract class CursorRecyclerAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH>
+        implements ItemTouchHelperAdapter{
 
     protected boolean mDataValid;
     protected Cursor mCursor;
@@ -89,11 +90,23 @@ public abstract class CursorRecyclerAdapter<VH extends RecyclerView.ViewHolder> 
             } else {
                 return RecyclerView.NO_ID;
             }
-        } else {
+        }
+        else {
             return RecyclerView.NO_ID;
         }
     }
 
+    public String getItemData(int position, String column_name){
+        if(mDataValid && mCursor != null){
+            if (mCursor.moveToPosition(position)) {
+                return mCursor.getString(mCursor.getColumnIndexOrThrow(column_name));
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
     /**
      * Change the underlying cursor to a new cursor. If there is an existing cursor it will be
      * closed.

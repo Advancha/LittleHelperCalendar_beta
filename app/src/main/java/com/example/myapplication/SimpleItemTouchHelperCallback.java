@@ -22,9 +22,9 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     public static final float ALPHA_FULL = 1.0f;
 
-    private final ClientsCursorRecyclerAdapter mAdapter;
+    private final CursorRecyclerAdapter mAdapter;
 
-    public SimpleItemTouchHelperCallback(ClientsCursorRecyclerAdapter adapter) {
+    public SimpleItemTouchHelperCallback(CursorRecyclerAdapter adapter) {
         mAdapter = adapter;
     }
 

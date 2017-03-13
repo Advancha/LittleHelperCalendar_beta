@@ -15,6 +15,6 @@ public interface OnStartDragListener {
      *
      * @param viewHolder The holder of the view to drag.
      */
-    void onStartDrag(ClientsCursorRecyclerAdapter.ViewHolder viewHolder);
+    void onStartDrag(RecyclerView.ViewHolder viewHolder);
 
 }
