@@ -21,7 +21,6 @@ public class VisitsListFragment extends Fragment implements OnStartDragListener 
     private OnFragmentInteractionListener mListener;
     private ItemTouchHelper mItemTouchHelper;
     public RecyclerView rvVisitList;
-    //public Cursor cursor;
     private RecyclerView.LayoutManager mLayoutManager;
     private VisitsCursorRecyclerAdapter cursorAdapter;
 
@@ -55,8 +54,6 @@ public class VisitsListFragment extends Fragment implements OnStartDragListener 
 
         rvVisitList.setHasFixedSize(true);
         rvVisitList.setLayoutManager(mLayoutManager);
-        //rvVisitList.setLayoutManager(new LinearLayoutManager((Context) mListener.onFragmentContextRequest()));
-
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(cursorAdapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
@@ -65,10 +62,9 @@ public class VisitsListFragment extends Fragment implements OnStartDragListener 
     }
 
     public void onCalDateChanged(String dateTimeStr){
-        /*
+
         DBHelper dbHelper = new DBHelper(getActivity());
-        cursor = dbHelper.getCursorForVisitList(dateTimeStr);
-        */
+        cursorAdapter.swapCursor(dbHelper.getCursorForVisitList(dateTimeStr));
 
     }
 
