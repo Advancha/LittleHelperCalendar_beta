@@ -197,4 +197,18 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.update(DBContract.TabVisits.TABLE_NAME,values," _id="+visit_id,null);
     }
+
+
+    public void addDBRecord_TabClients(String str_name, String str_phone){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DBContract.TabClients.COLUMN_NAME_NAME, str_name);
+        values.put(DBContract.TabClients.COLUMN_NAME_PHONE, str_phone);
+
+        db.insert(
+                DBContract.TabClients.TABLE_NAME,
+                null,
+                values);
+    }
 }

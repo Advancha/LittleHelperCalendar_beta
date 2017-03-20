@@ -40,13 +40,10 @@ public class VisitsListFragment extends Fragment implements OnStartDragListener 
         super.onViewCreated(view, savedInstanceState);
 
         rvVisitList = (RecyclerView) view.findViewById(R.id.visit_list);
-
         mLayoutManager=new LinearLayoutManager(getActivity());
 
         final DBHelper dbHelper = new DBHelper(getActivity());
-
         final Cursor cursor = dbHelper.getCursorForVisitList(mListener.onFragmentDataRequest());
-
         if (cursor!=null){
             cursorAdapter = new VisitsCursorRecyclerAdapter(cursor,dbHelper,this);
             rvVisitList.setAdapter(cursorAdapter);
@@ -58,14 +55,11 @@ public class VisitsListFragment extends Fragment implements OnStartDragListener 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(cursorAdapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(rvVisitList);
-
     }
 
     public void onCalDateChanged(String dateTimeStr){
-
         DBHelper dbHelper = new DBHelper(getActivity());
         cursorAdapter.swapCursor(dbHelper.getCursorForVisitList(dateTimeStr));
-
     }
 
     @Override
@@ -74,9 +68,9 @@ public class VisitsListFragment extends Fragment implements OnStartDragListener 
     }
 
     public interface OnFragmentInteractionListener {
-        void onFragmentItemSeleted(int position);
+        void onFragmentItemSelected(int position);
         String onFragmentDataRequest();
-        Context onFragmentContextRequest();
+        //Context onFragmentContextRequest();
     }
 
     @Override
@@ -88,6 +82,11 @@ public class VisitsListFragment extends Fragment implements OnStartDragListener 
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    public long getItemIDByPosition(int position){
+        long _id = cursorAdapter.getItemId(position);
+        return _id;
     }
 
 }

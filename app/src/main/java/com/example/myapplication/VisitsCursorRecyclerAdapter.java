@@ -44,7 +44,7 @@ public class VisitsCursorRecyclerAdapter extends CursorRecyclerAdapter<VisitsCur
     @Override
     public void onItemDismiss(int position) {
         int visit_id = (int) getItemId(position);
-        String date_str = "2017-03-13";//getItemData(position,DBContract.TabVisits.COLUMN_NAME_DATE);
+        String date_str = getItemData(position,DBContract.TabVisits.COLUMN_NAME_DATE);
         mDbHelper.deleteVisit(visit_id);
 
         Cursor new_cursor = mDbHelper.getCursorForVisitList(date_str);
@@ -118,7 +118,7 @@ public class VisitsCursorRecyclerAdapter extends CursorRecyclerAdapter<VisitsCur
         holder.llParent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //openDBRecordActivity(visit_id);
+
             }
         });
     }

@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -34,8 +35,8 @@ import com.roomorama.caldroid.CaldroidListener;
 import hirondelle.date4j.DateTime;
 
 public class MainActivity extends AppCompatActivity implements VisitsListFragment.OnFragmentInteractionListener{
-    static final int UPD_VISIT_LIST = 1;
-    static final int PICK_CONTACT=2;
+    static final int UPD_VISIT_LIST = 1000;
+    static final int PICK_CONTACT=2000;
 
     public static final String APP_PREFERENCES = "mysettings";
     public static final String APP_PREFERENCES_SELECTED_DAY = "selected_day";
@@ -115,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
 
         caldroidFragment.setCaldroidListener(caldroidListener);
 
-
         Bundle args = new Bundle();
         args.putInt(CaldroidFragment.MONTH, selectedDate.getMonth());
         args.putInt(CaldroidFragment.YEAR, selectedDate.getYear());
@@ -129,11 +129,6 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
         FragmentTransaction t = getSupportFragmentManager().beginTransaction();
         t.replace(R.id.calendar1, caldroidFragment);
         t.commit();
-
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-     //   client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -212,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
     }
 
 
-    public void openDBRecordActivity(Integer selectedId){
+    public void openVisitActivity(long selectedId){
         Intent intent = new Intent(this, ActivityVisit.class);
 
         intent.putExtra(String.valueOf(R.string.selected_id), selectedId);
@@ -255,43 +250,18 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
     }
 
     private void contactPicked(Intent data) {
-        Cursor cursor = null;
-        try {
-            String phoneNo = null ;
-            String name = null;
-            Uri uri = data.getData();
-            cursor = getContentResolver().query(uri, null, null, null, null);
-            cursor.moveToFirst();
-            int  phoneIndex =cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-            int  nameIndex =cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
-            //int  idIndex =cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID);
-
-            phoneNo = cursor.getString(phoneIndex);
-            name = cursor.getString(nameIndex);
-
-            addDBRecord_TabClients(name, phoneNo);
-            //System.out.println("Name "+name+" number "+phoneNo);
-        } catch (Exception e) {
-            e.printStackTrace();
+        DBHelper dbHelper = new DBHelper(this);
+        ArrayList<Contact> selectedContacts = data.getParcelableArrayListExtra("SelectedContacts");
+        for(int i=0;i<selectedContacts.size();i++) {
+            Contact contact = selectedContacts.get(i);
+            dbHelper.addDBRecord_TabClients(contact.name, contact.phone);
         }
+
     }
 
-    public void addDBRecord_TabClients(String str_name, String str_phone){
-        DBHelper mDbHelper = new DBHelper(this);
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(DBContract.TabClients.COLUMN_NAME_NAME, str_name);
-        values.put(DBContract.TabClients.COLUMN_NAME_PHONE, str_phone);
-
-       db.insert(
-                DBContract.TabClients.TABLE_NAME,
-                null,
-                values);
-    }
     public void OnClickAdd(View view) {
 
-        openDBRecordActivity(new Integer(-1));
+        openVisitActivity(new Integer(-1));
     }
 
     public DateTime dateToDateTime(Date date) {
@@ -329,39 +299,26 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
         return new DateTime(selectedDateYear,selectedDateMonth,selectedDateDay,0,0,0,0);
     }
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
+
     public void onClickMenuOpenClientList(){
         Intent i = new Intent(this,ActivityClientList.class);
         startActivity(i);
     }
 
     public void onClickMenuImportClients(){
-        Intent intent= new Intent(Intent.ACTION_PICK,  ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
 
-        startActivityForResult(intent, PICK_CONTACT);
+        Intent intentContactPick = new Intent(MainActivity.this,ContactsPickerActivity.class);
+        startActivityForResult(intentContactPick,PICK_CONTACT);
 
     }
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("Main Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
-    }
-
-
 
 
     @Override
-    public void onFragmentItemSeleted(int position) {
-
+    public void onFragmentItemSelected(int position) {
+        long selected_id=vlFragment.getItemIDByPosition(position);
+        if (selected_id>-1) {
+            openVisitActivity(selected_id);
+        }
     }
 
     @Override
@@ -369,10 +326,6 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
         return getStringSelectedDate();
     }
 
-    @Override
-    public Context onFragmentContextRequest(){
-        return this;
-    }
 }
 
 

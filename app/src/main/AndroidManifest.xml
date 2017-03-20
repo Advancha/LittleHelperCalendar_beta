@@ -14,9 +14,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".ActivityVisit" />
-        <activity android:name=".ActivityClientList" />
+        <activity android:name=".ActivityVisit"></activity>
+        <activity android:name=".ActivityClientList"></activity>
+        <activity android:name=".ContactsPickerActivity"></activity>
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -26,6 +28,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity android:name=".ActivityClient"></activity>
-    </application>
 
+    </application>
+    <uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
 </manifest>
