@@ -151,7 +151,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Cursor getCursorForVisitByID(Integer visit_id){
+    public Cursor getCursorForVisitByID(Long visit_id){
         Cursor cursor;
         SQLiteDatabase db = this.getReadableDatabase();
             String query = "SELECT * FROM "
@@ -165,7 +165,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
     }
-    public void addDBRecord_TabVisits(String date, String time, String price, String note, Integer client_id){
+    public void addDBRecord_TabVisits(String date, String time, String price, String note, Long client_id){
         //DBHelper mDbHelper = new DBHelper(this);
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -184,7 +184,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 values);
     }
 
-    public void updDBRecord_TabVisits(String date, String time, String price, String note, Integer client_id, Integer visit_id){
+    public void updDBRecord_TabVisits(String date, String time, String price, String note, Long client_id, Long visit_id){
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();

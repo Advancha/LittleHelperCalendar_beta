@@ -1,19 +1,14 @@
 package com.example.myapplication;
 
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.os.AsyncTask;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,11 +24,13 @@ public class VisitsCursorRecyclerAdapter extends CursorRecyclerAdapter<VisitsCur
 {
     public DBHelper mDbHelper;
     private final OnStartDragListener mDragStartListener;
+    private VisitsListFragment.OnFragmentInteractionListener mClickListener;
 
-    public VisitsCursorRecyclerAdapter(Cursor cursor, DBHelper dbHelper, OnStartDragListener dragStartListener) {
+    public VisitsCursorRecyclerAdapter(Cursor cursor, DBHelper dbHelper, OnStartDragListener dragStartListener, VisitsListFragment.OnFragmentInteractionListener mClickListener) {
         super(cursor);
         this.mDbHelper = dbHelper;
         this.mDragStartListener = dragStartListener;
+        this.mClickListener = mClickListener;
     }
 
     @Override
@@ -98,7 +95,6 @@ public class VisitsCursorRecyclerAdapter extends CursorRecyclerAdapter<VisitsCur
         String price = cursor.getString(cursor.getColumnIndexOrThrow(DBContract.TabVisits.COLUMN_NAME_PRICE));
         String note = cursor.getString(cursor.getColumnIndexOrThrow(DBContract.TabVisits.COLUMN_NAME_NOTE));
 
-
         holder.lcTime.setText(time);
         holder.lcClient.setText(client);
         holder.lcPrice.setText(price);
@@ -118,11 +114,10 @@ public class VisitsCursorRecyclerAdapter extends CursorRecyclerAdapter<VisitsCur
         holder.llParent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mClickListener.onFragmentItemSelected(holder.getItemId());
             }
         });
     }
-
 
 }
 

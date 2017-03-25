@@ -45,8 +45,9 @@ public class VisitsListFragment extends Fragment implements OnStartDragListener 
         final DBHelper dbHelper = new DBHelper(getActivity());
         final Cursor cursor = dbHelper.getCursorForVisitList(mListener.onFragmentDataRequest());
         if (cursor!=null){
-            cursorAdapter = new VisitsCursorRecyclerAdapter(cursor,dbHelper,this);
+            cursorAdapter = new VisitsCursorRecyclerAdapter(cursor,dbHelper,this,mListener);
             rvVisitList.setAdapter(cursorAdapter);
+
         }
 
         rvVisitList.setHasFixedSize(true);
@@ -68,9 +69,8 @@ public class VisitsListFragment extends Fragment implements OnStartDragListener 
     }
 
     public interface OnFragmentInteractionListener {
-        void onFragmentItemSelected(int position);
+        void onFragmentItemSelected(long item_id);
         String onFragmentDataRequest();
-        //Context onFragmentContextRequest();
     }
 
     @Override
@@ -83,10 +83,4 @@ public class VisitsListFragment extends Fragment implements OnStartDragListener 
                     + " must implement OnFragmentInteractionListener");
         }
     }
-
-    public long getItemIDByPosition(int position){
-        long _id = cursorAdapter.getItemId(position);
-        return _id;
-    }
-
 }

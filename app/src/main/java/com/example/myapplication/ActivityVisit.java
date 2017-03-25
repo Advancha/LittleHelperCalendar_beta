@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
@@ -32,11 +33,11 @@ public class ActivityVisit extends FragmentActivity {
     private EditText tvPrice;
     private EditText tvNote;
 
-    private static Integer selectedID;
-    private static Integer EMPTY_ID=new Integer(-1);
+    private static Long selectedID;
+    private static Long EMPTY_ID=new Long(-1);
     private DateTime calSelectedDate;
 
-    private  Cursor cursor;
+
     private ClientsCursorAdapter adapter;
     private DBHelper dbHelper;
 
@@ -58,14 +59,34 @@ public class ActivityVisit extends FragmentActivity {
         tvNote = (EditText) findViewById(R.id.note);
         tvPrice = (EditText) findViewById(R.id.price);
 
-        dbHelper = new DBHelper(this);
-        cursor = dbHelper.getCursorForClientList();
-        adapter = new ClientsCursorAdapter(this, cursor);
 
+        dbHelper = new DBHelper(this);
+        Cursor cursor = dbHelper.getCursorForClientList();
+        adapter = new ClientsCursorAdapter(this, cursor);
+        adapter.setFilterQueryProvider(new FilterQueryProvider() {
+            @Override
+            public Cursor runQuery(CharSequence constraint) {
+                return dbHelper.getFilteredCursorForClientList(constraint);
+                 }
+            });
+
+        /*
+        tvClient.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                tvClient.setTag(R.id.TAG_CLIENT_ID,adapter.getItemId(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        */
         tvClient.setAdapter(adapter);
 
         Intent i = getIntent();
-        selectedID = i.getIntExtra(String.valueOf(R.string.selected_id), EMPTY_ID);
+        selectedID = i.getLongExtra(String.valueOf(R.string.selected_id), EMPTY_ID);
         Integer selected_year = i.getIntExtra(String.valueOf(R.string.selected_date_year), 1900);
         Integer selected_month = i.getIntExtra(String.valueOf(R.string.selected_date_month), 1);
         Integer selected_day = i.getIntExtra(String.valueOf(R.string.selected_date_day), 1);
@@ -76,11 +97,12 @@ public class ActivityVisit extends FragmentActivity {
         if (!selectedID.equals(EMPTY_ID)) {
               setFields();
         }
+
+
     }
 
 
-
-    protected void giveBackSelectedDate() {
+    protected void finishWithParams() {
         Intent i = new Intent();
         i.putExtra(String.valueOf(R.string.selected_date_year), calSelectedDate.getYear());
         i.putExtra(String.valueOf(R.string.selected_date_month), calSelectedDate.getMonth());
@@ -89,16 +111,8 @@ public class ActivityVisit extends FragmentActivity {
         this.finish();
     }
 
-
-
     public void set_tvDate(DateTime calDate){
         tvDate.setText(String.format("%1$04d-%2$02d-%3$02d",calDate.getYear(),calDate.getMonth(),calDate.getDay()));
-    }
-    public void delDBRecord(){
-        DBHelper mDbHelper = new DBHelper(this);
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-        db.delete(DBContract.TabVisits.TABLE_NAME," _id="+selectedID,null);
     }
 
     public void setFields(){
@@ -107,7 +121,7 @@ public class ActivityVisit extends FragmentActivity {
             local_cursor.moveToPosition(0);
 
             String strTime = local_cursor.getString(local_cursor.getColumnIndexOrThrow(DBContract.TabVisits.COLUMN_NAME_TIME));
-            int clientID = local_cursor.getInt(local_cursor.getColumnIndexOrThrow(DBContract.TabClients._ID));
+            long clientID = local_cursor.getLong(local_cursor.getColumnIndexOrThrow(DBContract.TabVisits.COLUMN_NAME_CLIENT_ID));
             String strPrice = local_cursor.getString(local_cursor.getColumnIndexOrThrow(DBContract.TabVisits.COLUMN_NAME_PRICE));
             String strNote = local_cursor.getString(local_cursor.getColumnIndexOrThrow(DBContract.TabVisits.COLUMN_NAME_NOTE));
 
@@ -115,16 +129,15 @@ public class ActivityVisit extends FragmentActivity {
             tvNote.setText(strNote);
             tvPrice.setText(strPrice);
 
-
-            cursor.moveToFirst();
-            for (int i=0; i<cursor.getCount(); i++)
-            {
-                if (cursor.getInt(cursor.getColumnIndexOrThrow(DBContract.TabClients._ID))==clientID) {
-                    tvClient.setText(cursor.getString(cursor.getColumnIndexOrThrow(DBContract.TabClients.COLUMN_NAME_NAME)));
+            adapter.getCursor().moveToFirst();
+            for (int i=0; i<adapter.getCursor().getCount(); i++) {
+                if (adapter.getCursor().getInt(adapter.getCursor().getColumnIndexOrThrow(DBContract.TabClients._ID))==clientID) {
+                    tvClient.setText(adapter.getCursor().getString(adapter.getCursor().getColumnIndexOrThrow(DBContract.TabClients.COLUMN_NAME_NAME)),true);
+                    tvClient.setTag(R.id.TAG_CLIENT_ID, clientID);
                     break;
                 }
                 else {
-                    cursor.moveToNext();
+                    adapter.getCursor().moveToNext();
                 }
             }
         }
@@ -138,9 +151,17 @@ public class ActivityVisit extends FragmentActivity {
         newFragment.show(getFragmentManager(), "timePicker");
     }
 
+
+
     public void onSave(View view) {
-        Integer client_id = adapter.getCursor().getInt(cursor.getColumnIndex(DBContract.TabClients._ID));
-        Integer visit_id = selectedID;
+        Long client_id;
+        if (adapter.getCursor().getPosition()==-1) {
+            client_id =(Long) tvClient.getTag(R.id.TAG_CLIENT_ID);
+        }
+        else{
+            client_id = adapter.getItemId(adapter.getCursor().getPosition());
+        }
+        Long visit_id = selectedID;
         String date_text = tvDate.getText().toString();
         String time_text = tvTime.getText().toString();
         String price_text = tvPrice.getText().toString();
@@ -152,21 +173,11 @@ public class ActivityVisit extends FragmentActivity {
         else{
             dbHelper.updDBRecord_TabVisits(date_text,time_text,price_text,note_text,client_id,visit_id);
         }
-        giveBackSelectedDate();
+
+        finishWithParams();
+
     }
-    /*
-       public void onBack(View view) {
-           finish();
-       }
 
-
-       public void onDel(View view) {
-           if (!selectedID.equals(EMPTY_ID)) {
-               delDBRecord();
-           }
-           finish();
-       }
-   */
     public void onDecrDate(View view)
     {
         calSelectedDate=calSelectedDate.minusDays(1);

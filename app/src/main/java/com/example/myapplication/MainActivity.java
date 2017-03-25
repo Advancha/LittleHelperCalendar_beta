@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
 
     public void OnClickAdd(View view) {
 
-        openVisitActivity(new Integer(-1));
+        openVisitActivity(new Long(-1));
     }
 
     public DateTime dateToDateTime(Date date) {
@@ -314,10 +314,9 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
 
 
     @Override
-    public void onFragmentItemSelected(int position) {
-        long selected_id=vlFragment.getItemIDByPosition(position);
-        if (selected_id>-1) {
-            openVisitActivity(selected_id);
+    public void onFragmentItemSelected(long item_id) {
+        if (item_id>-1) {
+            openVisitActivity(item_id);
         }
     }
 

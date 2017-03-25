@@ -49,6 +49,8 @@ public class ClientsCursorAdapter extends CursorAdapter implements Filterable {
         return cursor.getString(cursor.getColumnIndexOrThrow(DBContract.TabClients.COLUMN_NAME_NAME));
     }
 
+
+    /*
     @Override
     public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
         Cursor currentCursor = null;
@@ -69,7 +71,7 @@ public class ClientsCursorAdapter extends CursorAdapter implements Filterable {
 
         return currentCursor;
     }
-
+*/
     public void close()
     {
         dbHelper.close();
