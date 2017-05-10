@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +13,8 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import static android.support.v7.recyclerview.R.styleable.RecyclerView;
 
 /**
  * Created by Ира on 28.02.2017.
@@ -42,6 +45,13 @@ public class VisitsListFragment extends Fragment implements OnStartDragListener 
         rvVisitList = (RecyclerView) view.findViewById(R.id.visit_list);
         mLayoutManager=new LinearLayoutManager(getActivity());
 
+     /*   rvVisitList.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                super.onDraw(c, parent, state);
+            }
+        });
+*/
         final DBHelper dbHelper = new DBHelper(getActivity());
         final Cursor cursor = dbHelper.getCursorForVisitList(mListener.onFragmentDataRequest());
         if (cursor!=null){
@@ -82,5 +92,9 @@ public class VisitsListFragment extends Fragment implements OnStartDragListener 
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    public Cursor getCursor(){
+        return cursorAdapter.getCursor();
     }
 }

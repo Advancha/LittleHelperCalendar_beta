@@ -13,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +37,7 @@ import hirondelle.date4j.DateTime;
 
 public class MainActivity extends AppCompatActivity implements VisitsListFragment.OnFragmentInteractionListener{
     static final int UPD_VISIT_LIST = 1000;
-    static final int PICK_CONTACT=2000;
+   // static final int PICK_CONTACT=2000;
 
     public static final String APP_PREFERENCES = "mysettings";
     public static final String APP_PREFERENCES_SELECTED_DAY = "selected_day";
@@ -48,16 +49,9 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
     private DateTime selectedDate;
     private Map extraData = new HashMap<String, DateTime>();
     private Bundle args = new Bundle();
-//    private ListView lv_visitList;
     private TextView tvSelectedDate;
     private FragmentManager fragmentManager;
     private VisitsListFragment vlFragment;
-//    private Cursor cursor;
-//    private VisitsCursorAdapter cursorAdapter;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
     private GoogleApiClient client;
 
     @Override
@@ -65,33 +59,18 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         tvSelectedDate = (TextView) findViewById(R.id.selected_date);
 
-  //      lv_visitList = (ListView) findViewById(R.id.visit_list);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_new_visit);
-
-        selectedDate=getSelectedDayFromSettings();
-        vlFragment = (VisitsListFragment)(getSupportFragmentManager().findFragmentById(R.id.fragment_visit_list));
-/*
-        lv_visitList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Integer selected_id=cursor.getInt(cursor.getColumnIndexOrThrow(DBContract.TabVisits._ID));
-                openDBRecordActivity(selected_id);
-            }
-        });
-
-*/
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 OnClickAdd(view);
-                  }
+            }
         });
 
+        selectedDate=getSelectedDayFromSettings();
+        vlFragment = (VisitsListFragment)(getSupportFragmentManager().findFragmentById(R.id.fragment_visit_list));
 
         caldroidFragment = new CaldroidCustomFragment();
         CaldroidListener caldroidListener = new CaldroidListener() {
@@ -145,9 +124,9 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
             case R.id.action_open_clients:
                 onClickMenuOpenClientList();
                 return true;
-            case R.id.action_import_clients:
-                onClickMenuImportClients();
-                return true;
+    //        case R.id.action_import_clients:
+    //            onClickMenuImportClients();
+    //            return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -223,12 +202,12 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-            case (PICK_CONTACT): {
+            /*case (PICK_CONTACT): {
                 if (resultCode == RESULT_OK) {
                     contactPicked(data);
                 }
             }
-
+*/
             case (UPD_VISIT_LIST): {
                 if (resultCode == RESULT_OK) {
                     Integer selected_year = data.getIntExtra(String.valueOf(R.string.selected_date_year), 1900);
@@ -249,6 +228,7 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
         }
     }
 
+    /*
     private void contactPicked(Intent data) {
         DBHelper dbHelper = new DBHelper(this);
         ArrayList<Contact> selectedContacts = data.getParcelableArrayListExtra("SelectedContacts");
@@ -258,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
         }
 
     }
-
+*/
     public void OnClickAdd(View view) {
 
         openVisitActivity(new Long(-1));
@@ -305,13 +285,14 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
         startActivity(i);
     }
 
+    /*
     public void onClickMenuImportClients(){
 
         Intent intentContactPick = new Intent(MainActivity.this,ContactsPickerActivity.class);
         startActivityForResult(intentContactPick,PICK_CONTACT);
 
     }
-
+    */
 
     @Override
     public void onFragmentItemSelected(long item_id) {
@@ -325,6 +306,20 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
         return getStringSelectedDate();
     }
 
+    public void onNotify(View view) {
+        Cursor vl_cursor = vlFragment.getCursor();
+        vl_cursor.moveToFirst();
+        for (int i=0; i<vl_cursor.getCount(); i++){
+            sendNotification(vl_cursor.getString(vl_cursor.getColumnIndexOrThrow(DBContract.TabClients.COLUMN_NAME_PHONE)));
+        }
+
+    }
+
+    private void sendNotification(String phoneNumber) {
+        String message = "Hi! You got a message from android!";
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, null, null);
+    }
 }
 
 

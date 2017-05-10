@@ -50,7 +50,7 @@ public class ActivityVisit extends FragmentActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSave(v);
+                onSave();
             }
         });
         tvDate = (EditText) findViewById(R.id.date);
@@ -153,7 +153,7 @@ public class ActivityVisit extends FragmentActivity {
 
 
 
-    public void onSave(View view) {
+    public void onSave() {
         Long client_id;
         if (adapter.getCursor().getPosition()==-1) {
             client_id =(Long) tvClient.getTag(R.id.TAG_CLIENT_ID);

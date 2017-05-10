@@ -17,10 +17,25 @@
         >
     </FrameLayout>
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/selected_date"/>
+        android:orientation="horizontal">
+       <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.7"
+            android:layout_height="wrap_content"
+            android:id="@+id/selected_date"
+            android:gravity="left"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="0.3"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="notify"
+            android:onClick="onNotify"
+            android:id="@+id/send_notification_btn"/>
+    </LinearLayout>
     <fragment android:name="com.example.myapplication.VisitsListFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
