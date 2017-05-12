@@ -311,6 +311,7 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
         vl_cursor.moveToFirst();
         for (int i=0; i<vl_cursor.getCount(); i++){
             sendNotification(vl_cursor.getString(vl_cursor.getColumnIndexOrThrow(DBContract.TabClients.COLUMN_NAME_PHONE)));
+            vl_cursor.moveToNext();
         }
 
     }
