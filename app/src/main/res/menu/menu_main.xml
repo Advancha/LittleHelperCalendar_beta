@@ -3,11 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
+
+    <item
+        android:id="@+id/action_open_dispatch"
+        android:orderInCategory="200"
+        android:title="@string/str_open_dispatch"
+        android:icon="@drawable/ic_action_dispatch"
+        app:showAsAction="always"
+        />
+
     <item
         android:id="@+id/action_open_clients"
-        android:orderInCategory="100"
+        android:orderInCategory="300"
         android:title="@string/str_open_clients"
+        android:icon="@drawable/ic_action_people"
+        app:showAsAction="ifRoom"
+        />
+    <item
+        android:id="@+id/action_open_sms_pattern"
+        android:orderInCategory="500"
+        android:title="@string/str_open_sms_pattern"
+        android:icon="@drawable/ic_action_sms_pattern"
         app:showAsAction="never"
-       />
-
+        />
+    <item
+        android:id="@+id/action_open_currency"
+        android:orderInCategory="600"
+        android:title="@string/str_open_currency"
+        android:icon="@drawable/ic_action_currency"
+        app:showAsAction="never"
+        />
 </menu>

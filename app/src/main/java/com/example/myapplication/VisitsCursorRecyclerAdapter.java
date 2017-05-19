@@ -24,9 +24,9 @@ public class VisitsCursorRecyclerAdapter extends CursorRecyclerAdapter<VisitsCur
 {
     public DBHelper mDbHelper;
     private final OnStartDragListener mDragStartListener;
-    private VisitsListFragment.OnFragmentInteractionListener mClickListener;
+    private OnFragmentInteractionListener mClickListener;
 
-    public VisitsCursorRecyclerAdapter(Cursor cursor, DBHelper dbHelper, OnStartDragListener dragStartListener, VisitsListFragment.OnFragmentInteractionListener mClickListener) {
+    public VisitsCursorRecyclerAdapter(Cursor cursor, DBHelper dbHelper, OnStartDragListener dragStartListener, OnFragmentInteractionListener mClickListener) {
         super(cursor);
         this.mDbHelper = dbHelper;
         this.mDragStartListener = dragStartListener;
@@ -76,7 +76,7 @@ public class VisitsCursorRecyclerAdapter extends CursorRecyclerAdapter<VisitsCur
 
         @Override
         public void onItemClear() {
-            itemView.setBackgroundColor(0);
+            itemView.setBackgroundColor(Color.WHITE);
         }
     }
 

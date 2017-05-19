@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:id="@+id/client_list_cell_layout"
     android:layout_marginTop="8dp"
-    android:elevation="4dp">
+    android:elevation="4dp"
+    android:background="@color/caldroid_white">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

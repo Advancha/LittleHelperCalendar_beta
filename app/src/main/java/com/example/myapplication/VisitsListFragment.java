@@ -45,13 +45,6 @@ public class VisitsListFragment extends Fragment implements OnStartDragListener 
         rvVisitList = (RecyclerView) view.findViewById(R.id.visit_list);
         mLayoutManager=new LinearLayoutManager(getActivity());
 
-     /*   rvVisitList.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-                super.onDraw(c, parent, state);
-            }
-        });
-*/
         final DBHelper dbHelper = new DBHelper(getActivity());
         final Cursor cursor = dbHelper.getCursorForVisitList(mListener.onFragmentDataRequest());
         if (cursor!=null){
@@ -78,10 +71,6 @@ public class VisitsListFragment extends Fragment implements OnStartDragListener 
         mItemTouchHelper.startDrag(viewHolder);
     }
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentItemSelected(long item_id);
-        String onFragmentDataRequest();
-    }
 
     @Override
     public void onAttach(Context context) {

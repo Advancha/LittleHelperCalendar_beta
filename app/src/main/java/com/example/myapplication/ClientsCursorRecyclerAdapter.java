@@ -72,7 +72,7 @@ public class ClientsCursorRecyclerAdapter extends CursorRecyclerAdapter<ClientsC
 
         @Override
         public void onItemClear() {
-            itemView.setBackgroundColor(0);
+            itemView.setBackgroundColor(Color.WHITE);
         }
     }
 

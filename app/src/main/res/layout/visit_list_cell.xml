@@ -6,7 +6,7 @@
         android:gravity="center_vertical"
         android:layout_weight="1"
         android:id="@+id/visit_list_cell_layout"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:elevation="4dp"
         android:background="@color/caldroid_white"
         >
@@ -17,7 +17,6 @@
             android:layout_width="@dimen/time_cell_width"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:textStyle="bold"
             android:height="30sp"
             />
         <LinearLayout
@@ -31,7 +30,7 @@
             android:text="@string/client"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:textStyle="bold"
+                android:textColor="@color/primary_text"
                 android:gravity="center_vertical"/>
 
             <TextView
@@ -39,8 +38,8 @@
             android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-            android:text="@string/note"
-            android:textColor="@color/secondary_text"
+                android:text="@string/note"
+                android:textColor="@color/secondary_text"
                 android:gravity="center_vertical"/>
         </LinearLayout>
     <LinearLayout
@@ -54,6 +53,7 @@
         android:id="@+id/list_cell_price"
         android:text="@string/price"
         android:gravity="center_vertical"
+        android:textColor="@color/primary_text"
         android:paddingRight="@dimen/text_padding"
         android:layout_width="wrap_content"
         android:layout_height="0dp"

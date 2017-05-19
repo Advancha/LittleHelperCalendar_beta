@@ -11,14 +11,18 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Calendar;
@@ -35,7 +39,7 @@ import com.roomorama.caldroid.CaldroidListener;
 
 import hirondelle.date4j.DateTime;
 
-public class MainActivity extends AppCompatActivity implements VisitsListFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener{
     static final int UPD_VISIT_LIST = 1000;
    // static final int PICK_CONTACT=2000;
 
@@ -116,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
         return true;
     }
 
-    @Override
+        @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
@@ -124,9 +128,9 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
             case R.id.action_open_clients:
                 onClickMenuOpenClientList();
                 return true;
-    //        case R.id.action_import_clients:
-    //            onClickMenuImportClients();
-    //            return true;
+            case R.id.action_open_dispatch:
+                onClickMenuOpenDispatchDialog();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -285,14 +289,13 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
         startActivity(i);
     }
 
-    /*
-    public void onClickMenuImportClients(){
 
-        Intent intentContactPick = new Intent(MainActivity.this,ContactsPickerActivity.class);
-        startActivityForResult(intentContactPick,PICK_CONTACT);
-
+    public void onClickMenuOpenDispatchDialog(){
+       AlertDialogFragment_Disppatch dlg=new AlertDialogFragment_Disppatch();
+       dlg.show(getFragmentManager(),"dlg");
     }
-    */
+
+
 
     @Override
     public void onFragmentItemSelected(long item_id) {
@@ -306,21 +309,9 @@ public class MainActivity extends AppCompatActivity implements VisitsListFragmen
         return getStringSelectedDate();
     }
 
-    public void onNotify(View view) {
-        Cursor vl_cursor = vlFragment.getCursor();
-        vl_cursor.moveToFirst();
-        for (int i=0; i<vl_cursor.getCount(); i++){
-            sendNotification(vl_cursor.getString(vl_cursor.getColumnIndexOrThrow(DBContract.TabClients.COLUMN_NAME_PHONE)));
-            vl_cursor.moveToNext();
-        }
 
-    }
 
-    private void sendNotification(String phoneNumber) {
-        String message = "Hi! You got a message from android!";
-        SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, message, null, null);
-    }
+
 }
 
 

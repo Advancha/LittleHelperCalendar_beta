@@ -16,7 +16,10 @@
     <string name="note">Note</string>
     <string name="price">Price</string>
     <string name="clients">Clients</string>
-    <string name="str_open_clients">Open list of clients</string>
+    <string name="str_open_clients">Clients</string>
+    <string name="str_open_dispatch">Dispatch</string>
+    <string name="str_open_currency">Currency</string>
+    <string name="str_open_sms_pattern">SMS pattern</string>
     <string name="str_import_clients">Import clients from contacts</string>
     <string name="str_client_name">Client name</string>
     <string name="str_client_phone">Client phone</string>
@@ -27,6 +30,12 @@
     <string name="txt_search">Search...</string>
     <string name="txt_done">Done</string>
 
+    <string name="dispatch_dialog_title">SMS dispatch</string>
+    <string name="dispatch_dialog_positive_button">"Yes"</string>
+    <string name="dispatch_dialog_negative_button">"No"</string>
+    <string name="dispatch_dialog_message">"Do you want to send sms about visits on "</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_fragment_alert_dialog">FragmentAlertDialog</string>
 </resources>
